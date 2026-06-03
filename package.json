@@ -1,0 +1,28 @@
+{
+  "name": "fotaza2-ceteraevelyn",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Evelyncetera/Fotaza2-CeteraEvelyn.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Evelyncetera/Fotaza2-CeteraEvelyn/issues"
+  },
+  "homepage": "https://github.com/Evelyncetera/Fotaza2-CeteraEvelyn#readme",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "pug": "^3.0.4"
+  }
+}
