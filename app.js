@@ -2,6 +2,7 @@ import 'dotenv/config'; //ejecuta los archivos .env
 import express from 'express';
 import sequelize, { conexionDB } from './models/config.js';
 import './models/Usuario.js';
+import authRoutes from './routes/authRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT; 
@@ -16,7 +17,7 @@ app.use(express.urlencoded( { extended: true} ));
 
 //statics 
 
-app.use(express.static('./public'));
+//app.use(express.static('public'));
 
 
 //render
@@ -25,9 +26,10 @@ app.get('/', (req, res) => {
     res.render('layoutDePrueba');
 });
 
-/* app.get('/', (req,res) => {
-    res.send('¡HOLA, ESTO ES FOTAZA 2 :) !');
-}); */ 
+
+app.use('/auth', authRoutes);
+
+
 
 conexionDB()
     .then(() => {
