@@ -1,0 +1,21 @@
+extends ../layout
+
+block content
+    .row.justify-content-center
+        .col-md-5
+        .card.shadow-sm.mt-4
+            .card-header.bg-white.text-center.py-3
+            h3.mb-0 Iniciar Sesión
+            .card-body.p-4
+            form(action="/auth/login" method="POST")
+                .mb-3
+                label.form-label(for="email") Correo Electrónico
+                input#email.form-control(type="email" name="email" required)
+                .mb-3
+                label.form-label(for="password") Contraseña
+                input#password.form-control(type="password" name="password" required)
+                .d-grid
+                button.btn.btn-primary.btn-lg(type="submit") Ingresar
+            .card-footer.text-center.bg-white.py-3
+            span ¿No tienes cuenta? 
+            a.text-decoration-none(href="/auth/registro") Regístrate aquí

@@ -36,3 +36,32 @@ export const registroUsuario = async (req, res) => {
     }
 };
 
+export const mostrarLogin = (req, res) => {
+    res.render('auth/login');
+};
+
+export const validarUsuario = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const usuario = await User.findOne({ where: { email } });
+
+        console.log("Contraseña del usuario en BD:", usuario ? usuario.password : "No hay usuario");
+        
+        if (!usuario) {
+            return res.send('El usuario no existe.');
+        }
+
+        const esCorrecta = await bcrypt.compare(password, usuario.password_hash);
+
+        if (!esCorrecta) {
+            return res.send('Contraseña incorrecta.');
+        }
+
+        res.send(`¡Bienvenido/a ${usuario.nombre}!`);
+
+    } catch (error) {
+        console.error('Error al iniciar sesión:', error);
+        res.send('Error en el servidor.');
+    }
+};
