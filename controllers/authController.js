@@ -45,8 +45,6 @@ export const validarUsuario = async (req, res) => {
 
     try {
         const usuario = await User.findOne({ where: { email } });
-
-        console.log("Contraseña del usuario en BD:", usuario ? usuario.password : "No hay usuario");
         
         if (!usuario) {
             return res.send('El usuario no existe.');
@@ -58,7 +56,8 @@ export const validarUsuario = async (req, res) => {
             return res.send('Contraseña incorrecta.');
         }
 
-        res.send(`¡Bienvenido/a ${usuario.nombre}!`);
+        req.session.usuarioId = usuario.id; 
+        res.send(`¡Hola ${usuario.nombre}! Ya podés navegar como usuario logueado.`);
 
     } catch (error) {
         console.error('Error al iniciar sesión:', error);
