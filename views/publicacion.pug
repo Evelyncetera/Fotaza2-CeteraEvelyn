@@ -1,0 +1,42 @@
+extends layout
+
+block content
+
+    h1 Crear publicación
+
+    form(
+        action="./publicacion.pug"
+        method="POST"
+    )
+
+        .mb-3
+            label.form-label Título
+
+            input.form-control(
+                type="text"
+                name="titulo"
+                required
+            )
+
+        .mb-3
+            label.form-label Descripción
+
+            textarea.form-control(
+                name="descripcion"
+            )
+
+        .mb-3
+
+            input.form-check-input(
+                type="checkbox"
+                name="comentarios_abiertos"
+                checked
+            )
+
+            label.form-check-label.ms-2
+                | Permitir comentarios
+
+        button.btn.btn-success(
+            type="submit"
+        )
+            | Publicar

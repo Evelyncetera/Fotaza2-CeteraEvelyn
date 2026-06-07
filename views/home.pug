@@ -1,0 +1,17 @@
+extends layout
+
+block content
+
+    h1 Inicio
+
+    a.btn.btn-primary.mb-3(
+        href="/publicaciones"
+    ) Nueva publicación
+    if publicaciones && publicaciones.length > 0
+        each publicacion in publicaciones
+            .card.mb-3
+                .card-body
+                    h5= publicacion.titulo
+                    p= publicacion.descripcion
+    else
+        p No hay publicaciones para mostrar.
