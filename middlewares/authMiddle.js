@@ -3,5 +3,5 @@ export const esUsuarioAutenticado = (req, res, next) => {
         return next();
     } 
 
-    res.redirect('auth/login');
+    res.redirect('/auth/login');
 }

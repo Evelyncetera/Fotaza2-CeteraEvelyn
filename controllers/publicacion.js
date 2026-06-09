@@ -5,17 +5,24 @@ export const mostrarFormulario = (req, res) => {
 };
 
 export const crearPublicacion = async (req, res) => {
-
-    const {
-        titulo,
-        descripcion,
-        comentarios_abiertos
-    } = req.body;
-
+    console.log('SESSION:', req.session);
+    console.log('USUARIO ID:', req.session.usuarioId);
     try {
+        if(!req.session.usuarioId){
+            return res.redirect('/auth/login');
+        }
+
+        const {
+            titulo,
+            descripcion,
+            comentarios_abiertos
+        } = req.body;
+
+        const nombreImagen = req.file ? req.file.filename : null;
+
 
         await Publicacion.create({
-            usuario_id: 1, // de prueba
+            usuario_id: req.session.usuarioId,
             titulo,
             descripcion,
             comentarios_abiertos: comentarios_abiertos ? true : false
@@ -23,10 +30,10 @@ export const crearPublicacion = async (req, res) => {
 
         res.redirect('/');
 
-    } catch(error) {
+    } catch (error) {
 
         console.error(error);
 
-        res.send('Error al crear publicación');
+        res.status(500).send('Error al crear publicación');
     }
 };
