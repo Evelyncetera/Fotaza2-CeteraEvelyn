@@ -57,7 +57,7 @@ export const validarUsuario = async (req, res) => {
         }
 
         req.session.usuarioId = usuario.id; 
-        res.send(`¡Hola ${usuario.nombre}! Ya podés navegar como usuario logueado.`);
+        res.redirect('/');
 
     } catch (error) {
         console.error('Error al iniciar sesión:', error);

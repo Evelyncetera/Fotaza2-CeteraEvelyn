@@ -2,10 +2,12 @@ import 'dotenv/config'; //ejecuta los archivos .env
 import express from 'express';
 import sequelize, { conexionDB } from './models/config.js';
 import './models/Usuario.js';
+import './models/Publicacion.js';
 import authRoutes from './routes/authRoutes.js';
 import session from 'express-session';
 import homeRoutes from './routes/home.js';
 import publicacionRoutes from './routes/publicacionRoutes.js';
+
 
 const app = express();
 const PORT = process.env.PORT; 
@@ -31,26 +33,6 @@ app.use(session({
 
 app.use('/auth', authRoutes);
 app.use('/publicaciones', publicacionRoutes);
-
-//statics 
-
-app.get('/', (req,res) =>{
-    res.render('home', {
-        publicaciones: [],
-        fotosAgregadas: []
-    });
-});
-
-
-//render
-
-app.get('/', (req, res) => {
-    res.render('layoutDePrueba');
-});
-
-
-
-
 
 
 conexionDB()
