@@ -1,6 +1,7 @@
 import Publicacion from "../models/Publicacion.js";
 import Usuario from "../models/Usuario.js";
 import Imagen from "../models/Imagen.js";
+import Comentario from "../models/Comentario.js";
 
 export const mostrarHome = async (req, res) => {
     try {
@@ -11,6 +12,11 @@ export const mostrarHome = async (req, res) => {
                 { 
                 model: Imagen,
                 as: 'imagenes'
+                },
+                {
+                    model: Comentario,
+                    as: 'comentarios',
+                    include: [Usuario]
                 }
             ],
             order: [['createdAt', 'DESC']]

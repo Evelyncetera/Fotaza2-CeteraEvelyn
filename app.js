@@ -2,13 +2,15 @@ import 'dotenv/config'; //ejecuta los archivos .env
 import './models/Usuario.js';
 import './models/Publicacion.js';
 import './models/Imagen.js';
+import './models/Comentario.js';
 import express from 'express';
 import session from 'express-session';
 import sequelize, { conexionDB } from './models/config.js';
 import authRoutes from './routes/authRoutes.js';
 import homeRoutes from './routes/home.js';
 import publicacionRoutes from './routes/publicacionRoutes.js';
-import  busquedaRoutes from './routes/busquedaRoutes.js';
+import busquedaRoutes from './routes/busquedaRoutes.js';
+import comentarioRoutes from './routes/comentarioRoutes.js';
 
 
 const app = express();
@@ -22,6 +24,8 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded( { extended: true} ));
 
+
+//SESSION
 app.use(session({
     secret: process.env.SESSION_KEY,
     resave: false,
@@ -31,10 +35,15 @@ app.use(session({
     }
 }));
 
+
+//rutas
 app.use('/auth', authRoutes);
 app.use('/publicaciones', publicacionRoutes);
 app.use('/buscar', busquedaRoutes);
+app.use('/comentarios', comentarioRoutes);
 
+
+// Conexion a BD
 conexionDB()
     .then(() => {
         app.listen(PORT, (err) =>{
