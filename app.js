@@ -1,10 +1,11 @@
 import 'dotenv/config'; //ejecuta los archivos .env
-import express from 'express';
-import sequelize, { conexionDB } from './models/config.js';
 import './models/Usuario.js';
 import './models/Publicacion.js';
-import authRoutes from './routes/authRoutes.js';
+import './models/Imagen.js';
+import express from 'express';
 import session from 'express-session';
+import sequelize, { conexionDB } from './models/config.js';
+import authRoutes from './routes/authRoutes.js';
 import homeRoutes from './routes/home.js';
 import publicacionRoutes from './routes/publicacionRoutes.js';
 

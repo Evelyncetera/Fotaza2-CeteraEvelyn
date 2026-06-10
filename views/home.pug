@@ -11,7 +11,18 @@ block content
         each publicacion in publicaciones
             .card.mb-3
                 .card-body
+
+                    if publicacion.imagenes && publicacion.imagenes.length > 0
+                        img(
+                            src="/uploads/" + publicacion.imagenes[0].archivo
+                            alt="Imagen"
+                            width="300"
+                        )
+                
                     h5= publicacion.titulo
                     p= publicacion.descripcion
+                    p
+                        strong Autor: 
+                        | #{publicacion.User.nombre}
     else
         p No hay publicaciones para mostrar.

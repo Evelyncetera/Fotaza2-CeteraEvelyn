@@ -1,4 +1,5 @@
 import Publicacion from '../models/Publicacion.js';
+import Imagen from '../models/Imagen.js';
 
 export const mostrarFormulario = (req, res) => {
     res.render('publicacion');
@@ -8,7 +9,7 @@ export const crearPublicacion = async (req, res) => {
     console.log('SESSION:', req.session);
     console.log('USUARIO ID:', req.session.usuarioId);
     try {
-        if(!req.session.usuarioId){
+        if (!req.session.usuarioId) {
             return res.redirect('/auth/login');
         }
 
@@ -21,12 +22,19 @@ export const crearPublicacion = async (req, res) => {
         const nombreImagen = req.file ? req.file.filename : null;
 
 
-        await Publicacion.create({
+        const nuevaPublicacion = await Publicacion.create({
             usuario_id: req.session.usuarioId,
             titulo,
             descripcion,
             comentarios_abiertos: comentarios_abiertos ? true : false
         });
+
+        if (req.file) {
+            await Imagen.create({
+                publicacion_id: nuevaPublicacion.id,
+                archivo: req.file.filename
+            });
+        }
 
         res.redirect('/');
 
