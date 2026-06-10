@@ -3,6 +3,37 @@ extends layout
 block content
 
     h1 Inicio
+    
+    form(
+        action="/buscar"
+        method="GET"
+        class="mb-4"
+    )
+        .mb-2
+            input.form-control(
+                type="text"
+                name="titulo"
+                placeholder="Buscar por título"
+            )
+
+        .mb-3
+            input.form-control(
+                type="date"
+                name="fecha"
+            )
+
+        .d-flex.gap-2
+            button.btn.btn-primary(
+                type="submit"
+            )
+                | Buscar
+
+        a.btn.btn-secondary(
+            href="/"
+        )
+            | Limpiar
+
+    hr
 
     a.btn.btn-primary.mb-3(
         href="/publicaciones/crear"
@@ -24,5 +55,8 @@ block content
                     p
                         strong Autor: 
                         | #{publicacion.User.nombre}
+                    p
+                        strong Fecha:
+                        |  #{new Date(publicacion.createdAt).toLocaleDateString('es-AR')}
     else
         p No hay publicaciones para mostrar.

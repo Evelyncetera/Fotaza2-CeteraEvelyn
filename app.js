@@ -8,13 +8,12 @@ import sequelize, { conexionDB } from './models/config.js';
 import authRoutes from './routes/authRoutes.js';
 import homeRoutes from './routes/home.js';
 import publicacionRoutes from './routes/publicacionRoutes.js';
+import  busquedaRoutes from './routes/busquedaRoutes.js';
 
 
 const app = express();
 const PORT = process.env.PORT; 
 
-
-//pug
 app.set('view engine', 'pug');
 app.set('views', './views');
 
@@ -34,7 +33,7 @@ app.use(session({
 
 app.use('/auth', authRoutes);
 app.use('/publicaciones', publicacionRoutes);
-
+app.use('/buscar', busquedaRoutes);
 
 conexionDB()
     .then(() => {
