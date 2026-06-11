@@ -4,6 +4,7 @@ import Imagen from "../models/Imagen.js";
 import Comentario from "../models/Comentario.js";
 import Valoracion from "../models/Valoracion.js";
 import Interes from '../models/Interes.js';
+import Follower from '../models/Follower.js';
 
 export const mostrarHome = async (req, res) => {
     try {
@@ -35,13 +36,27 @@ export const mostrarHome = async (req, res) => {
         });
 
         // Para depurar 
-        console.log(JSON.stringify(publicaciones, null, 2));
-        const usuarioId = req.session ? req.session.usuarioId : null;
+        //console.log(JSON.stringify(publicaciones, null, 2));
+        
+        const usuarioId = req.session?.usuarioId || null;
+        let seguidos = [];
+
+        if (usuarioId) {
+            const seguimientos = await Follower.findAll({
+                where: {
+                    seguidor_id: usuarioId
+                }
+            });
+            seguidos = seguimientos.map(
+                seguimiento => seguimiento.seguido_id
+            );
+        }
 
         console.log("Cantidad de publicaciones encontradas:", publicaciones.length);
         res.render('home', {
             publicaciones,
             usuarioLogueado: usuarioId,
+            seguidos,
             fotosmostradas: []
         });
     } catch (error) {

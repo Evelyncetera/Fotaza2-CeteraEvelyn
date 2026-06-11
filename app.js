@@ -14,7 +14,7 @@ import busquedaRoutes from './routes/busquedaRoutes.js';
 import comentarioRoutes from './routes/comentarioRoutes.js';
 import valoracionRoutes from './routes/valoracionRoutes.js';
 import interesRoutes from './routes/interesRoutes.js';
-
+import followerRoutes from './routes/followerRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT; 
@@ -22,7 +22,6 @@ const PORT = process.env.PORT;
 app.set('view engine', 'pug');
 app.set('views', './views');
 
-app.use('/', homeRoutes);
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded( { extended: true} ));
@@ -38,14 +37,15 @@ app.use(session({
     }
 }));
 
-
 //rutas
+app.use('/', homeRoutes);
 app.use('/auth', authRoutes);
 app.use('/publicaciones', publicacionRoutes);
 app.use('/buscar', busquedaRoutes);
 app.use('/comentarios', comentarioRoutes);
 app.use('/valoraciones', valoracionRoutes);
 app.use('/interes', interesRoutes);
+app.use('/follower', followerRoutes);
 
 // Conexion a BD
 conexionDB()

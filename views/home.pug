@@ -107,8 +107,39 @@ block content
                     h5= publicacion.titulo
                     p= publicacion.descripcion
                     p
-                        strong Autor: 
+                        strong Autor:
                         | #{publicacion.User.nombre}
+
+                    if usuarioLogueado && usuarioLogueado != publicacion.User.id
+                        if seguidos.includes(publicacion.User.id)
+
+                            form(
+                                action="/follower/dejar-seguir"
+                                method="POST"
+                            )
+                                input(
+                                    type="hidden"
+                                    name="seguido_id"
+                                    value=publicacion.User.id
+                                )
+
+                                button.btn.btn-sm.btn-secondary(
+                                    type="submit"
+                                ) Dejar de seguir
+                        else
+                            form(
+                                action="/follower/seguir"
+                                method="POST"
+                            )
+                                input(
+                                    type="hidden"
+                                    name="seguido_id"
+                                    value=publicacion.User.id
+                                )
+
+                                button.btn.btn-sm.btn-primary(
+                                    type="submit"
+                                ) Seguir
                     p
                         strong Fecha:
                         |  #{new Date(publicacion.createdAt).toLocaleDateString('es-AR')}
@@ -146,5 +177,3 @@ block content
                         ) Comentar
     else
         p No hay publicaciones para mostrar.
-
-    
