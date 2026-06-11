@@ -36,165 +36,55 @@ block content
                             )
                                 | Limpiar
 
-    h1 Feed 
+    h1.my-4 Feed
+    a.btn.btn-success.mb-4(href="/publicaciones/crear") Nueva publicación
 
-    a.btn.btn-success.mb-4(
-        href="/publicaciones/crear"
-    )
-        | Nueva publicación
-
-    if publicaciones && publicaciones.length > 0
+    .feed-grid
         each publicacion in publicaciones
-
-            .card.mb-3
-                .card-body
-
-                    if publicacion.imagenes && publicacion.imagenes.length > 0
-                        img(
-                            src="/uploads/" + publicacion.imagenes[0].archivo
-                            alt="Imagen"
-                            width="300"
-                        )
-                        p.mt-2
-                            strong ❤️ Interesados:
-                            |  #{publicacion.imagenes[0].intereses ? publicacion.imagenes[0].intereses.length : 0}
-
-                        form(
-                            action="/interes/toggle"
-                            method="POST"
-                        )
-                            input(
-                                type="hidden"
-                                name="imagen_id"
-                                value=publicacion.imagenes[0].id
-                            )
-                            
-                            - let promedio = 0
-
-                            if publicacion.imagenes[0].valoraciones && publicacion.imagenes[0].valoraciones.length > 0
-                                - let suma = 0
-                                each valoracion in publicacion.imagenes[0].valoraciones
-                                    - suma += valoracion.valor
-                                - promedio = (suma / publicacion.imagenes[0].valoraciones.length).toFixed(1)
-                                
-                                
-                                p
-                                    strong Valoración:
-                                    |  #{promedio}/5
-                            else
-                                p
-                                    strong Valoración:
-                                    |  Sin valoraciones
-
-                            button.btn.btn-sm.btn-outline-danger(
-                                type="submit"
-                            )
-                                | ❤️ Me interesa
-                        form(
-                            action="/valoraciones/crear"
-                            method="POST"
-                        )
-                            input(
-                                type="hidden"
-                                name="imagen_id"
-                                value=publicacion.imagenes[0].id
-                            )
-                            select(name="valor")
-                                option(value="1") 1
-                                option(value="2") 2
-                                option(value="3") 3
-                                option(value="4") 4
-                                option(value="5") 5
-                            button.btn.btn-sm.btn-warning(
-                                type="submit"
-                            )
-                                | Valorar
-
-                    h5= publicacion.titulo
-                    p= publicacion.descripcion
-                    p
-                        strong Autor:
-                        | #{publicacion.User.nombre}
-
+            .card.shadow-sm
+                .card-header.d-flex.justify-content-between.align-items-center
+                    strong= publicacion.User.nombre
                     if usuarioLogueado && usuarioLogueado == publicacion.User.id
+                        form(action=`/publicaciones/eliminar/${publicacion.id}` method="POST" class="m-0")
+                            button.btn.btn-link.text-danger.p-0(type="submit")
+                                i.bi.bi-trash
 
-                        form(
-                            action=`/publicaciones/eliminar/${publicacion.id}`
-                            method="POST"
-                        )
-                            button.btn.btn-danger.btn-sm(
-                                type="submit"
-                                onclick="return confirm('¿Eliminar publicación?')"
-                            )
-                                | Eliminar publicación
+                if publicacion.imagenes && publicacion.imagenes.length > 0
+                    img.card-img-top(src="/uploads/" + publicacion.imagenes[0].archivo alt="Foto")
 
-                    if usuarioLogueado && usuarioLogueado != publicacion.User.id
-                        if seguidos.includes(publicacion.User.id)
-
-                            form(
-                                action="/follower/dejar-seguir"
-                                method="POST"
-                            )
-                                input(
-                                    type="hidden"
-                                    name="seguido_id"
-                                    value=publicacion.User.id
-                                )
-
-                                button.btn.btn-sm.btn-secondary(
-                                    type="submit"
-                                ) Dejar de seguir
-                        else
-                            form(
-                                action="/follower/seguir"
-                                method="POST"
-                            )
-                                input(
-                                    type="hidden"
-                                    name="seguido_id"
-                                    value=publicacion.User.id
-                                )
-
-                                button.btn.btn-sm.btn-primary(
-                                    type="submit"
-                                ) Seguir
-                    p
-                        strong Fecha:
-                        |  #{new Date(publicacion.createdAt).toLocaleDateString('es-AR')}
+                .card-body
+                    h5.card-title= publicacion.titulo
+                    p.card-text= publicacion.descripcion
                     
-                    h6 Comentarios
-
-                    if publicacion.comentarios && publicacion.comentarios.length > 0
-                        each comentario in publicacion.comentarios
+                    .d-flex.gap-2.align-items-center.mt-3
+                        form(action="/interes/toggle" method="POST")
+                            input(type="hidden" name="imagen_id" value=publicacion.imagenes[0].id)
+                            button.btn.btn-outline-danger.btn-sm(type="submit")
+                                i.bi.bi-heart-fill 
+                                |  #{publicacion.imagenes[0].intereses ? publicacion.imagenes[0].intereses.length : 0}
                         
-                            p   
-                                strong #{comentario.User.nombre}:
-                                |  #{comentario.texto}
+                        
+                        form.d-flex.gap-1(action="/valoraciones/crear" method="POST")
+                            input(type="hidden" name="imagen_id" value=publicacion.imagenes[0].id)
+                            select.form-select.form-select-sm(name="valor" style="width: 60px;")
+                                each val in [1,2,3,4,5]
+                                    option(value=val)= val
+                            button.btn.btn-outline-warning.btn-sm(type="submit") Valorar
+
+                    h6.mt-3.border-top.pt-2 Comentarios
+                    if publicacion.comentarios && publicacion.comentarios.length > 0
+                        .overflow-auto(style="max-height: 100px;")
+                            each comentario in publicacion.comentarios
+                                p.small.mb-1 
+                                    strong #{comentario.User.nombre}: 
+                                    | #{comentario.texto}
                     else
-                        p No hay comentarios todavía.
-                    
-                    form(
-                        action="/comentarios/crear"
-                        method="POST"
-                    )
-                        input(
-                            type="hidden"
-                            name="publicacion_id"
-                            value=publicacion.id
-                        )
+                        p.small.text-muted No hay comentarios.
 
-                        input.form-control.mb-2(
-                            type="text"
-                            name="texto"
-                            placeholder="Escribí un comentario..."
-                            required
-                        )
+                    form(action="/comentarios/crear" method="POST" class="mt-2")
+                        input(type="hidden" name="publicacion_id" value=publicacion.id)
+                        input.form-control.form-control-sm.mb-1(type="text" name="texto" placeholder="Comentar..." required)
+                        button.btn.btn-sm.btn-outline-primary(type="submit") Comentar
 
-                        button.btn.btn-sm.btn-primary(
-                            type="submit"
-                        ) Comentar
-
-    else
-        p No hay publicaciones para mostrar.
-    
-    
+                .card-footer.text-muted.small
+                    | Fecha: #{new Date(publicacion.createdAt).toLocaleDateString('es-AR')}
