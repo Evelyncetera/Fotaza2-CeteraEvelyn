@@ -3,6 +3,7 @@ import './models/Usuario.js';
 import './models/Publicacion.js';
 import './models/Imagen.js';
 import './models/Comentario.js';
+import './models/Valoracion.js';
 import express from 'express';
 import session from 'express-session';
 import sequelize, { conexionDB } from './models/config.js';
@@ -11,6 +12,8 @@ import homeRoutes from './routes/home.js';
 import publicacionRoutes from './routes/publicacionRoutes.js';
 import busquedaRoutes from './routes/busquedaRoutes.js';
 import comentarioRoutes from './routes/comentarioRoutes.js';
+import valoracionRoutes from './routes/valoracionRoutes.js';
+import interesRoutes from './routes/interesRoutes.js';
 
 
 const app = express();
@@ -41,7 +44,8 @@ app.use('/auth', authRoutes);
 app.use('/publicaciones', publicacionRoutes);
 app.use('/buscar', busquedaRoutes);
 app.use('/comentarios', comentarioRoutes);
-
+app.use('/valoraciones', valoracionRoutes);
+app.use('/interes', interesRoutes);
 
 // Conexion a BD
 conexionDB()
