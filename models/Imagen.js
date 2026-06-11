@@ -39,7 +39,8 @@ Publicacion.hasMany(Imagen, {
 });
 
 Imagen.belongsTo(Publicacion, {
-    foreignKey: 'publicacion_id'
+    foreignKey: 'publicacion_id',
+    as: 'publicacion'
 });
 
 export default Imagen;
