@@ -15,6 +15,9 @@ import comentarioRoutes from './routes/comentarioRoutes.js';
 import valoracionRoutes from './routes/valoracionRoutes.js';
 import interesRoutes from './routes/interesRoutes.js';
 import followerRoutes from './routes/followerRoutes.js';
+import perfilRoutes from './routes/perfilRoutes.js';
+
+
 
 const app = express();
 const PORT = process.env.PORT; 
@@ -46,6 +49,7 @@ app.use('/comentarios', comentarioRoutes);
 app.use('/valoraciones', valoracionRoutes);
 app.use('/interes', interesRoutes);
 app.use('/follower', followerRoutes);
+app.use('/perfil', perfilRoutes);
 
 // Conexion a BD
 conexionDB()

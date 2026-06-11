@@ -1,0 +1,53 @@
+extends layout
+
+block content
+
+    .d-flex.justify-content-between.align-items-center.mb-3
+
+    h1 Mi Perfil
+
+    a.btn.btn-outline-primary(
+        href="/"
+    ) Inicio
+
+    p
+        strong Nombre:
+        |  #{usuario.nombre}
+
+    p
+        strong Apellido:
+        |  #{usuario.apellido}
+
+    p
+        strong Email:
+        |  #{usuario.email}
+
+    p
+        strong Seguidores:
+        |  #{seguidores}
+
+    p
+        strong Siguiendo:
+        |  #{seguidos}
+
+    p
+        strong Publicaciones:
+        |  #{publicaciones.length}
+
+    hr
+
+    h2 Mis publicaciones
+
+    each publicacion in publicaciones
+
+        .card.mb-3
+            .card-body
+
+                h5= publicacion.titulo
+
+                if publicacion.imagenes.length > 0
+
+                    img(
+                        src="/uploads/" + publicacion.imagenes[0].archivo
+                        width="300"
+                    )
