@@ -4,6 +4,11 @@ block content
 
     h1 Inicio
     
+    a.btn.btn-secondary.mb-3(
+        href="/perfil"
+    )
+        | Mi perfil
+
     form(
         action="/buscar"
         method="GET"
@@ -40,6 +45,7 @@ block content
     ) Nueva publicación
     if publicaciones && publicaciones.length > 0
         each publicacion in publicaciones
+
             .card.mb-3
                 .card-body
 
@@ -110,6 +116,18 @@ block content
                         strong Autor:
                         | #{publicacion.User.nombre}
 
+                    if usuarioLogueado && usuarioLogueado == publicacion.User.id
+
+                        form(
+                            action=`/publicaciones/eliminar/${publicacion.id}`
+                            method="POST"
+                        )
+                            button.btn.btn-danger.btn-sm(
+                                type="submit"
+                                onclick="return confirm('¿Eliminar publicación?')"
+                            )
+                                | Eliminar publicación
+
                     if usuarioLogueado && usuarioLogueado != publicacion.User.id
                         if seguidos.includes(publicacion.User.id)
 
@@ -175,5 +193,8 @@ block content
                         button.btn.btn-sm.btn-primary(
                             type="submit"
                         ) Comentar
+
     else
         p No hay publicaciones para mostrar.
+    
+    

@@ -34,14 +34,12 @@ export const mostrarHome = async (req, res) => {
             ],
             order: [['createdAt', 'DESC']]
         });
-
-        // Para depurar 
-        //console.log(JSON.stringify(publicaciones, null, 2));
         
         const usuarioId = req.session?.usuarioId || null;
         let seguidos = [];
 
         if (usuarioId) {
+            
             const seguimientos = await Follower.findAll({
                 where: {
                     seguidor_id: usuarioId
@@ -51,8 +49,6 @@ export const mostrarHome = async (req, res) => {
                 seguimiento => seguimiento.seguido_id
             );
         }
-
-        console.log("Cantidad de publicaciones encontradas:", publicaciones.length);
         res.render('home', {
             publicaciones,
             usuarioLogueado: usuarioId,
