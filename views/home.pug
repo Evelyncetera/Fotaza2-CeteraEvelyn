@@ -2,47 +2,47 @@ extends layout
 
 block content
 
-    h1 Inicio
-    
-    a.btn.btn-secondary.mb-3(
-        href="/perfil"
-    )
-        | Mi perfil
+    .card.mb-4
+            .card-body
+                h5 Buscar publicaciones
 
-    form(
-        action="/buscar"
-        method="GET"
-        class="mb-4"
-    )
-        .mb-2
-            input.form-control(
-                type="text"
-                name="titulo"
-                placeholder="Buscar por título"
-            )
+                form(
+                    action="/buscar"
+                    method="GET"
+                )
+                    .row
+                        .col-md-5
+                            input.form-control(
+                                type="text"
+                                name="titulo"
+                                placeholder="Título"
+                            )
 
-        .mb-3
-            input.form-control(
-                type="date"
-                name="fecha"
-            )
+                        .col-md-3
+                            input.form-control(
+                                type="date"
+                                name="fecha"
+                            )
 
-        .d-flex.gap-2
-            button.btn.btn-primary(
-                type="submit"
-            )
-                | Buscar
+                        .col-md-2
+                            button.btn.btn-primary.w-100(
+                                type="submit"
+                            )
+                                | Buscar
 
-        a.btn.btn-secondary(
-            href="/"
-        )
-            | Limpiar
+                        .col-md-2
+                            a.btn.btn-secondary.w-100(
+                                href="/"
+                            )
+                                | Limpiar
 
-    hr
+    h1 Feed 
 
-    a.btn.btn-primary.mb-3(
+    a.btn.btn-success.mb-4(
         href="/publicaciones/crear"
-    ) Nueva publicación
+    )
+        | Nueva publicación
+
     if publicaciones && publicaciones.length > 0
         each publicacion in publicaciones
 

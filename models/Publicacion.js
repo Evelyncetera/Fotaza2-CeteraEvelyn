@@ -35,7 +35,8 @@ const Publicacion = sequelize.define(
             type: DataTypes.ENUM(
                 'borrador',
                 'publicada',
-                'archivada'
+                'archivada',
+                'eliminada'
             ),
             allowNull: false,
             defaultValue: 'publicada'
