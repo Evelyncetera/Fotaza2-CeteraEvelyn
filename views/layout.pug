@@ -9,10 +9,45 @@ html(lang="es")
         link(rel="stylesheet", href="/style.css")
 
     body.bg-light
-        nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
-            div.container
-                a.navbar-brand(href="/") Fotaza 2
+        nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.mb-4
+            .container
+
+                a.navbar-brand
+                    | Fotaza2
+
+                .navbar-nav.me-auto
+
+                    a.nav-link(
+                        href="/"
+                    )
+                        | Inicio
+
+                .navbar-nav
+
+                    if usuarioLogueado
+
+                        a.nav-link(
+                            href="/perfil"
+                        )
+                            | Mi perfil
+                        a.nav-link(
+                            href="/auth/logout"
+                        )
+                            | Cerrar sesión
+                    else
+
+                        a.nav-link(
+                            href="/auth/login"
+                        )
+                            | Iniciar sesión
+
+                        a.nav-link(
+                            href="/auth/registro"
+                        )
+                            | Registrarse
         
+        
+
         main.container.mt-5
             block content
 

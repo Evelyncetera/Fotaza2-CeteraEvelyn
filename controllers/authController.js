@@ -64,3 +64,17 @@ export const validarUsuario = async (req, res) => {
         res.send('Error en el servidor.');
     }
 };
+
+export const cerrarSesion = (req, res) => {
+
+    req.session.destroy((error) => {
+
+        if (error) {
+            return res.send(
+                'Error al cerrar sesión'
+            );
+        }
+
+        res.redirect('/');
+    });
+};
