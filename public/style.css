@@ -1,0 +1,30 @@
+.feed-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.card-img-top {
+    height: 300px;
+    object-fit: cover;     
+    width: 100%;
+}
+
+.logo-fotaza {
+    font-size: 2rem;
+    font-weight: bold;
+    text-decoration: none;
+    
+    background: linear-gradient(90deg, #ff0080, #7928ca);
+    
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent; 
+    
+
+    transition: transform 0.3s ease;
+}
+
+.logo-fotaza:hover {
+    transform: scale(1.05);
+}
