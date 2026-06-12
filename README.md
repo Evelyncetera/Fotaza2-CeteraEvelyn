@@ -31,7 +31,8 @@ Este proyecto utiliza una arquitectura moderna basada en la nube:
 Para ejecutar el proyecto, crea un archivo `.env` en la raíz con las siguientes variables:
 Utiliza como base el archivo .env.example proporcionado:
 
-```.env.example
+```
+.env.example
 
 ```
 Completa los valores con tus credenciales de Neon, Cloudinary y tu clave secreta.
@@ -70,8 +71,8 @@ Tras ejecutar `npm run db:init`, puedes acceder al sistema con los siguientes us
 
 | Usuario   | Email                                            | Contraseña |
 | --------- | ------------------------------------------------ | ---------- |
-| UsuarioA  | [usuarioA@fotaza.com](mailto:usuarioA@fotaza.com)|   12345    |
-| UsuarioB  | [usuarioB@fotaza.com](mailto:usuarioB@fotaza.com)|   12345    |
+| UsuarioA  | [usuarioA@fotaza.com](mailto:usuarioA@fotaza.com)|   123456   |
+| UsuarioB  | [usuarioB@fotaza.com](mailto:usuarioB@fotaza.com)|   123456   |
 
 ## 📝 Notas de Implementación
 
