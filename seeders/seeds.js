@@ -2,6 +2,7 @@
 import bcrypt from 'bcrypt';
 import User from '../models/Usuario.js';
 import Publicacion from '../models/Publicacion.js';
+import Imagen from '../models/Imagen.js';
 
 export const ejecutarSeed = async (queryInterface = null) => {
     const salt = await bcrypt.genSalt(10);
@@ -17,6 +18,17 @@ export const ejecutarSeed = async (queryInterface = null) => {
         { titulo: "Atardecer en San Luis", descripcion: "Disfrutando el paisaje", imagen_url: "https://res.cloudinary.com/tu-cloud/image/upload/v1/foto2.jpg", usuario_id: usuarios[1].id }
     ]);
     console.log("Seeders ejecutados correctamente.");
+
+    await Imagen.bulkCreate([
+        {
+            url: "https://res.cloudinary.com/tu-cloud/...",
+            publicacion_id: publicaciones[0].id
+        },
+        {
+            url: "https://res.cloudinary.com/tu-cloud/...",
+            publicacion_id: publicaciones[1].id
+        }
+    ]);
 };
 
 export default {
