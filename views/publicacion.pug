@@ -2,32 +2,53 @@ extends layout
 
 block content
 
-    h1 Crear publicación
+    .row.justify-content-center
+        .col-md-8.col-lg-6
 
-    form(
-        action="/publicaciones/crear"
-        method="POST"
-        enctype="multipart/form-data"
-    )
+            .card.shadow-sm
+                .card-body
 
-        .mb-3
-            label.form-label Título
-            input.form-control(type="text" name="titulo" required)
+                    h1.text-center.mb-4 Crear publicación
 
-        .mb-3
-            label.form-label Descripción
-            textarea.form-control(name="descripcion")
+                    form(
+                        action="/publicaciones/crear"
+                        method="POST"
+                        enctype="multipart/form-data"
+                    )
 
-        .mb-3
-            label.form-label Seleccionar imagen
-            input.form-control(type="file" name="imagen" accept="image/*")
+                        .mb-3
+                            label.form-label Título
+                            input.form-control(
+                                type="text"
+                                name="titulo"
+                                required
+                            )
 
-        .mb-3
-            input.form-check-input(type="checkbox" name="comentarios_abiertos" checked)
-            label.form-check-label.ms-2
-                | Permitir comentarios
+                        .mb-3
+                            label.form-label Descripción
+                            textarea.form-control(
+                                name="descripcion"
+                                rows="4"
+                            )
 
-        button.btn.btn-success(
-            type="submit"
-        )
-            | Publicar
+                        .mb-3
+                            label.form-label Seleccionar imagen
+                            input.form-control(
+                                type="file"
+                                name="imagen"
+                                accept="image/*"
+                            )
+
+                        .form-check.mb-3
+                            input.form-check-input(
+                                type="checkbox"
+                                name="comentarios_abiertos"
+                                checked
+                            )
+                            label.form-check-label
+                                | Permitir comentarios
+
+                        button.btn.btn-success.w-100(
+                            type="submit"
+                        )
+                            | Publicar
