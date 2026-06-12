@@ -36,10 +36,8 @@ export const buscarPublicaciones = async (req, res) => {
 
             order: [['createdAt', 'DESC']]
         });
-        console.log('SESSION EN BUSQUEDA:', req.session);
         res.render('home', {
-            publicaciones,
-            usuarioLogueado: req.session.usuario_id
+            publicaciones
         });
 
     } catch(error) {
