@@ -57,16 +57,12 @@ export const mostrarPerfil = async (req, res) => {
         });
 
         for (const publicacion of publicaciones) {
-            if (publicacion.imagenes.length > 0) {
-                const valoraciones = publicacion.imagenes[0].valoraciones;
+            if (publicacion.imagenes && publicacion.imagenes.length > 0) {
+                const valoraciones = publicacion.imagenes[0].valoraciones || [];
 
                 if (valoraciones.length > 0) {
-                    const suma = valoraciones.reduce(
-                        (acc, val) => acc + val.valor,
-                        0
-                    );
-                    publicacion.promedioValoraciones =
-                        (suma / valoraciones.length).toFixed(1);
+                    const suma = valoraciones.reduce((acc, val) => acc + val.valor, 0);
+                    publicacion.promedioValoraciones = (suma / valoraciones.length).toFixed(1);
                 } else {
                     publicacion.promedioValoraciones = "Sin valorar";
                 }

@@ -72,7 +72,7 @@ export const probarCreacion = async (req, res) => {
             titulo: "Post de Prueba",
             descripcion: "Esto es una prueba automática",
             imagen_url: "https://res.cloudinary.com/demo/image/upload/sample.jpg",
-            usuario_id: 1 // Asegúrate que este usuario exista
+            usuario_id: 1
         });
         res.send("¡Funcionó! Publicación creada con ID: " + nuevaPublicacion.id);
     } catch (e) {

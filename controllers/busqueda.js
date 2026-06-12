@@ -2,6 +2,11 @@ import { Op } from 'sequelize';
 import Publicacion from '../models/Publicacion.js';
 import Usuario from '../models/Usuario.js';
 import Imagen from '../models/Imagen.js';
+import Follower from '../models/Follower.js';
+import Valoracion from '../models/Valoracion.js';
+import Interes from '../models/Interes.js';
+import Comentario from '../models/Comentario.js';
+
 
 export const buscarPublicaciones = async (req, res) => {
 
@@ -30,14 +35,48 @@ export const buscarPublicaciones = async (req, res) => {
                 Usuario,
                 {
                     model: Imagen,
-                    as: 'imagenes'
+                    as: 'imagenes',
+                    include: [
+                        {
+                            model: Valoracion,
+                            as: 'valoraciones'
+                        },
+                        {
+                            model: Interes,
+                            as: 'intereses'
+                        }
+                    ]
+                },
+                {
+                    model: Comentario,
+                    as: 'comentarios',
+                    include: [Usuario]
                 }
             ],
-
             order: [['createdAt', 'DESC']]
         });
+
+        const usuarioId = req.session?.usuarioId || null;
+        let seguidos = [];
+
+            if (usuarioId) {
+
+                const seguimientos = await Follower.findAll({
+                    where: {
+                        seguidor_id: usuarioId
+                    }
+                });
+
+                seguidos = seguimientos.map(
+                    seguimiento => seguimiento.seguido_id
+                );
+            }
+
+
         res.render('home', {
-            publicaciones
+            publicaciones,
+            seguidos,
+            fotosmostradas: []
         });
 
     } catch(error) {
