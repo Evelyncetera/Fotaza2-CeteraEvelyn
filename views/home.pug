@@ -71,20 +71,20 @@ block content
                                         option(value=val)= val
                                 button.btn.btn-outline-warning.btn-sm(type="submit") Valorar
 
-                    h6.mt-3.border-top.pt-2 Comentarios
-                    if publicacion.comentarios && publicacion.comentarios.length > 0
-                        .overflow-auto(style="max-height: 100px;")
-                            each comentario in publicacion.comentarios
-                                p.small.mb-1 
-                                    strong #{comentario.User.nombre}: 
-                                    | #{comentario.texto}
-                    else
-                        p.small.text-muted No hay comentarios.
+                        h6.mt-3.border-top.pt-3 Comentarios
+                        if publicacion.comentarios && publicacion.comentarios.length > 0
+                            .overflow-auto(style="max-height: 100px;")
+                                each comentario in publicacion.comentarios
+                                    p.small.mb-1 
+                                        strong #{comentario.User.nombre}: 
+                                        | #{comentario.texto}
+                        else
+                            p.small.text-muted No hay comentarios.
 
-                    form(action="/comentarios/crear" method="POST" class="mt-2")
-                        input(type="hidden" name="publicacion_id" value=publicacion.id)
-                        input.form-control.form-control-sm.mb-1(type="text" name="texto" placeholder="Comentar..." required)
-                        button.btn.btn-sm.btn-outline-primary(type="submit") Comentar
+                        form(action="/comentarios/crear" method="POST" class="mt-2")
+                            input(type="hidden" name="publicacion_id" value=publicacion.id)
+                            input.form-control.form-control-sm.mb-1(type="text" name="texto" placeholder="Comentar..." required)
+                            button.btn.btn-sm.btn-outline-primary(type="submit") Comentar
 
                 .card-footer.text-muted.small
                     | Fecha: #{new Date(publicacion.createdAt).toLocaleDateString('es-AR')}

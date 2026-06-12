@@ -18,6 +18,7 @@ import followerRoutes from './routes/followerRoutes.js';
 import perfilRoutes from './routes/perfilRoutes.js';
 import { upload } from './middlewares/multerCloudinary.js';
 import './middlewares/cloudinary.js';
+import { usuarioMiddleware } from './middlewares/authMiddle.js';
 
 
 const app = express();
@@ -40,6 +41,8 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000, // 24h
     }
 }));
+
+app.use(usuarioMiddleware);
 
 //rutas
 app.use('/', homeRoutes);

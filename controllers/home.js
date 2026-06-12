@@ -57,12 +57,25 @@ export const mostrarHome = async (req, res) => {
         
         res.render('home', {
             publicaciones,
-            usuarioLogueado: usuarioId,
             seguidos,
             fotosmostradas: []
         });
     } catch (error) {
         console.error(error);
         res.status(500).send("Error al cargar el home");
+    }
+};
+
+export const probarCreacion = async (req, res) => {
+    try {
+        const nuevaPublicacion = await Publicacion.create({
+            titulo: "Post de Prueba",
+            descripcion: "Esto es una prueba automática",
+            imagen_url: "https://res.cloudinary.com/demo/image/upload/sample.jpg",
+            usuario_id: 1 // Asegúrate que este usuario exista
+        });
+        res.send("¡Funcionó! Publicación creada con ID: " + nuevaPublicacion.id);
+    } catch (e) {
+        res.status(500).send("Error: " + e.message);
     }
 };

@@ -32,18 +32,42 @@ block content
 
     hr
 
-    h2 Mis publicaciones
+    h2.mb-4 Mis publicaciones
 
-    each publicacion in publicaciones
+    .feed-grid
 
-        .card.mb-3
-            .card-body
+        each publicacion in publicaciones
 
-                h5= publicacion.titulo
+            .card.shadow-sm
 
-                if publicacion.imagenes.length > 0
-
-                    img(
-                        src="/uploads/" + publicacion.imagenes[0].archivo
-                        width="300"
+                if publicacion.imagenes && publicacion.imagenes.length > 0
+                    img.card-img-top(
+                        src=publicacion.imagenes[0].archivo
+                        alt=publicacion.titulo
                     )
+
+                .card-body
+
+                    h5.card-title= publicacion.titulo
+
+                    .d-flex.gap-3.mb-3
+
+                        span
+                            i.bi.bi-heart-fill.text-danger
+                            |  #{publicacion.imagenes[0].intereses.length}
+
+                        p
+                            i.bi.bi-star-fill.text-warning
+                            |  #{publicacion.promedioValoraciones}
+
+                        span
+                            i.bi.bi-chat-left-text
+                            |  #{publicacion.comentarios.length}
+
+                    form(
+                        action=`/publicaciones/eliminar/${publicacion.id}`
+                        method="POST"
+                    )
+                        button.btn.btn-danger.btn-sm
+                            i.bi.bi-trash
+                            |  Eliminar
