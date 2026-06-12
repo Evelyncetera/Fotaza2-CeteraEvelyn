@@ -18,8 +18,6 @@ export const crearPublicacion = async (req, res) => {
             comentarios_abiertos
         } = req.body;
 
-        const nombreImagen = req.file ? req.file.filename : null;
-
         const nuevaPublicacion = await Publicacion.create({
             usuario_id: req.session.usuarioId,
             titulo,
@@ -28,12 +26,13 @@ export const crearPublicacion = async (req, res) => {
         });
 
         if (req.file) {
-            await Imagen.create({
+            const nuevaImagen = await Imagen.create({
                 publicacion_id: nuevaPublicacion.id,
-                archivo: req.file.filename
+                archivo: req.file.path
             });
         }
 
+        
         res.redirect('/');
 
     } catch (error) {

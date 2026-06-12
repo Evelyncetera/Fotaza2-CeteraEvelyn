@@ -56,7 +56,7 @@ export const validarUsuario = async (req, res) => {
             return res.send('Contraseña incorrecta.');
         }
 
-        req.session.usuarioId = usuario.id; 
+        req.session.usuarioId = usuario.id;
         res.redirect('/');
 
     } catch (error) {

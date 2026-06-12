@@ -50,26 +50,26 @@ block content
                                 i.bi.bi-trash
 
                 if publicacion.imagenes && publicacion.imagenes.length > 0
-                    img.card-img-top(src="/uploads/" + publicacion.imagenes[0].archivo alt="Foto")
+                    img.card-img-top(src=publicacion.imagenes[0].archivo alt="Foto")
 
-                .card-body
-                    h5.card-title= publicacion.titulo
-                    p.card-text= publicacion.descripcion
-                    
-                    .d-flex.gap-2.align-items-center.mt-3
-                        form(action="/interes/toggle" method="POST")
-                            input(type="hidden" name="imagen_id" value=publicacion.imagenes[0].id)
-                            button.btn.btn-outline-danger.btn-sm(type="submit")
-                                i.bi.bi-heart-fill 
-                                |  #{publicacion.imagenes[0].intereses ? publicacion.imagenes[0].intereses.length : 0}
+                    .card-body
+                        h5.card-title= publicacion.titulo
+                        p.card-text= publicacion.descripcion
                         
-                        
-                        form.d-flex.gap-1(action="/valoraciones/crear" method="POST")
-                            input(type="hidden" name="imagen_id" value=publicacion.imagenes[0].id)
-                            select.form-select.form-select-sm(name="valor" style="width: 60px;")
-                                each val in [1,2,3,4,5]
-                                    option(value=val)= val
-                            button.btn.btn-outline-warning.btn-sm(type="submit") Valorar
+                        .d-flex.gap-2.align-items-center.mt-3
+                            form(action="/interes/toggle" method="POST")
+                                input(type="hidden" name="imagen_id" value=publicacion.imagenes[0].id)
+                                button.btn.btn-outline-danger.btn-sm(type="submit")
+                                    i.bi.bi-heart-fill 
+                                    |  #{publicacion.imagenes[0].intereses ? publicacion.imagenes[0].intereses.length : 0}
+                            
+                            
+                            form.d-flex.gap-1(action="/valoraciones/crear" method="POST")
+                                input(type="hidden" name="imagen_id" value=publicacion.imagenes[0].id)
+                                select.form-select.form-select-sm(name="valor" style="width: 60px;")
+                                    each val in [1,2,3,4,5]
+                                        option(value=val)= val
+                                button.btn.btn-outline-warning.btn-sm(type="submit") Valorar
 
                     h6.mt-3.border-top.pt-2 Comentarios
                     if publicacion.comentarios && publicacion.comentarios.length > 0

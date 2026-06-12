@@ -49,6 +49,12 @@ export const mostrarHome = async (req, res) => {
                 seguimiento => seguimiento.seguido_id
             );
         }
+
+        console.log(
+            JSON.stringify(publicaciones[0], null, 2)
+        );
+
+        
         res.render('home', {
             publicaciones,
             usuarioLogueado: usuarioId,

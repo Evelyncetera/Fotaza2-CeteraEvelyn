@@ -1,4 +1,4 @@
-import 'dotenv/config'; //ejecuta los archivos .env
+import 'dotenv/config';
 import './models/Usuario.js';
 import './models/Publicacion.js';
 import './models/Imagen.js';
@@ -16,7 +16,8 @@ import valoracionRoutes from './routes/valoracionRoutes.js';
 import interesRoutes from './routes/interesRoutes.js';
 import followerRoutes from './routes/followerRoutes.js';
 import perfilRoutes from './routes/perfilRoutes.js';
-
+import { upload } from './middlewares/multerCloudinary.js';
+import './middlewares/cloudinary.js';
 
 
 const app = express();
