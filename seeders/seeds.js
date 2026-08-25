@@ -13,22 +13,23 @@ export const ejecutarSeed = async (queryInterface = null) => {
         { nombre: 'UsuarioB', apellido: 'Demo', email: 'usuarioB@fotaza.com', password_hash: pass, avatar: 'https://res.cloudinary.com/tu-cloud/image/upload/v1/avatar2.jpg' }
     ]);
 
-    await Publicacion.bulkCreate([
-        { titulo: "Mi primer post", descripcion: "Foto increíble", imagen_url: "https://res.cloudinary.com/tu-cloud/image/upload/v1/foto1.jpg", usuario_id: usuarios[0].id },
-        { titulo: "Atardecer en San Luis", descripcion: "Disfrutando el paisaje", imagen_url: "https://res.cloudinary.com/tu-cloud/image/upload/v1/foto2.jpg", usuario_id: usuarios[1].id }
+    const publicaciones = await Publicacion.bulkCreate([
+        { titulo: "Mi primer post", descripcion: "Foto increíble", usuario_id: usuarios[0].id },
+        { titulo: "Atardecer en San Luis", descripcion: "Disfrutando el paisaje", usuario_id: usuarios[1].id }
     ]);
-    console.log("Seeders ejecutados correctamente.");
+    console.log("Publicaciones creadas correctamente.");
 
     await Imagen.bulkCreate([
         {
-            url: "https://res.cloudinary.com/tu-cloud/...",
+            archivo: "https://res.cloudinary.com/tu-cloud/image/upload/v1/foto1.jpg",
             publicacion_id: publicaciones[0].id
         },
         {
-            url: "https://res.cloudinary.com/tu-cloud/...",
+            archivo: "https://res.cloudinary.com/tu-cloud/image/upload/v1/foto2.jpg",
             publicacion_id: publicaciones[1].id
         }
     ]);
+    console.log("Seeders ejecutados correctamente.");
 };
 
 export default {

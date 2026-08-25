@@ -1,12 +1,14 @@
 import { sequelize, conexionDB } from "../../models/config.js";
+import Comentario from "../../models/Comentario.js";
 import { ejecutarSeed } from "../seeds.js"
 
 async function init() {
     try {
-        console.log("--- Iniciando inicialización de BD ---");
-        
+        console.log("--- Inicialización de BD ---");
         await conexionDB(); 
         
+        await sequelize.sync({force:true});
+
         console.log("--- Ejecutando seeders ---");
         await ejecutarSeed();
         

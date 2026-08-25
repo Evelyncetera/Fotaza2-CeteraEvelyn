@@ -1,7 +1,8 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./config.js";
 import Usuario from "./Usuario.js";
-import Publicacion from "./Publicacion.js";
+import Imagen from "./Imagen.js";
+
 
 const Comentario = sequelize.define(
     'Comentario', 
@@ -19,11 +20,11 @@ const Comentario = sequelize.define(
                 key: 'id'
             }
         },    
-        publicacion_id: {
+        imagen_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'publicacion',
+                model: 'imagen',
                 key: 'id'
             }
         },
@@ -48,13 +49,13 @@ Comentario.belongsTo(Usuario, {
     foreignKey: 'usuario_id'
 });
 
-Publicacion.hasMany(Comentario, {
-    foreignKey: 'publicacion_id',
+Imagen.hasMany(Comentario, {
+    foreignKey: 'imagen_id',
     as: 'comentarios'
 });
 
-Comentario.belongsTo(Publicacion, {
-    foreignKey: 'publicacion_id'
+Comentario.belongsTo(Imagen, {
+    foreignKey: 'imagen_id'
 });
 
 

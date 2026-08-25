@@ -4,3 +4,6 @@ package-lock.json
 
 # config
 .env
+
+# Other
+consigna.md
