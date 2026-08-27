@@ -6,12 +6,12 @@ export const crearComentario = async (req, res) => {
         if (!req.session.usuarioId) {
             return res.redirect('/auth/login');
         }
-        const { texto, publicacion_id } = req.body;
+        const { texto, imagen_id } = req.body;
 
         await Comentario.create({
             texto,
             usuario_id: req.session.usuarioId,
-            publicacion_id
+            imagen_id
         });
         res.redirect('/');
 

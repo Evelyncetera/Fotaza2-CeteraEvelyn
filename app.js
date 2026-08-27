@@ -6,6 +6,8 @@ import './models/Comentario.js';
 import './models/Valoracion.js';
 import './models/Tag.js';
 import './models/PublicacionTag.js';
+import "./models/DenunciaImagen.js";
+import "./models/DenunciaComentarios.js";
 import express from 'express';
 import session from 'express-session';
 import sequelize, { conexionDB } from './models/config.js';
@@ -19,6 +21,7 @@ import interesRoutes from './routes/interesRoutes.js';
 import tagRoutes from './routes/tagRoutes.js';
 import followerRoutes from './routes/followerRoutes.js';
 import perfilRoutes from './routes/perfilRoutes.js';
+import denunciaRoutes from './routes/denunciaRoutes.js';
 import { upload } from './middlewares/multerCloudinary.js';
 import './middlewares/cloudinary.js';
 import { usuarioMiddleware } from './middlewares/authMiddle.js';
@@ -58,6 +61,7 @@ app.use('/tags', tagRoutes);
 app.use('/interes', interesRoutes);
 app.use('/follower', followerRoutes);
 app.use('/perfil', perfilRoutes);
+app.use('/denuncias', denunciaRoutes);
 
 // Conexion a BD
 conexionDB()

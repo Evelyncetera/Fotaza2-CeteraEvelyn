@@ -14,12 +14,20 @@ const Interes = sequelize.define(
 
         usuario_id: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            references: {
+                model: 'usuario',
+                key: 'id'
+            }
         },
 
         imagen_id: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            references: {
+                model: 'imagen',
+                key: 'id'
+            }
         }
     },
     {
