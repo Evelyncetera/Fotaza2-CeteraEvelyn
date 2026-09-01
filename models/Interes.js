@@ -34,7 +34,13 @@ const Interes = sequelize.define(
         sequelize,
         tableName: 'interes',
         freezeTableName: true,
-        timestamps: true
+        timestamps: true,
+        indexes: [
+            {
+                unique: true, 
+                fields: ['usuario_id', 'imagen_id']
+            }
+        ]
     }
 );
 

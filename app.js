@@ -63,6 +63,18 @@ app.use('/follower', followerRoutes);
 app.use('/perfil', perfilRoutes);
 app.use('/denuncias', denunciaRoutes);
 
+//404
+app.use((req, res) => {
+    res.status(404).send('Página no encontrada');
+});
+
+//global error
+app.use((err, req, res, next) => {
+    console.error(err);
+
+    res.status(500).send('Ocurrió un error interno en el servidor');
+});
+
 // Conexion a BD
 conexionDB()
     .then(() => {
