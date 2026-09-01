@@ -34,13 +34,13 @@ export const mostrarPerfil = async (req, res) => {
                         {
                             model: Interes,
                             as: 'intereses'
+                        },
+                        {
+                            model: Comentario,
+                            as: 'comentarios'
                         }
                     ]
                 },
-                {
-                    model: Comentario,
-                    as: 'comentarios'
-                }
             ]
         });
 

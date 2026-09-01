@@ -23,13 +23,13 @@ export const mostrarHome = async (req, res) => {
                         {
                             model: Interes,
                             as: 'intereses'
+                        },
+                        {
+                            model: Comentario,
+                            as: 'comentarios',
+                            include: [Usuario]
                         }
                     ]
-                },
-                {
-                    model: Comentario,
-                    as: 'comentarios',
-                    include: [Usuario]
                 }
             ],
             order: [['createdAt', 'DESC']]
@@ -63,19 +63,5 @@ export const mostrarHome = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send("Error al cargar el home");
-    }
-};
-
-export const probarCreacion = async (req, res) => {
-    try {
-        const nuevaPublicacion = await Publicacion.create({
-            titulo: "Post de Prueba",
-            descripcion: "Esto es una prueba automática",
-            imagen_url: "https://res.cloudinary.com/demo/image/upload/sample.jpg",
-            usuario_id: 1
-        });
-        res.send("¡Funcionó! Publicación creada con ID: " + nuevaPublicacion.id);
-    } catch (e) {
-        res.status(500).send("Error: " + e.message);
     }
 };

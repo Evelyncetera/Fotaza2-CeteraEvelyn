@@ -54,7 +54,7 @@ block content
 
                         span
                             i.bi.bi-heart-fill.text-danger
-                            |  #{publicacion.imagenes[0].intereses.length}
+                            |  #{publicacion.imagenes && publicacion.imagenes.length > 0 ? publicacion.imagenes[0].intereses.length : 0}
 
                         p
                             i.bi.bi-star-fill.text-warning
@@ -62,7 +62,7 @@ block content
 
                         span
                             i.bi.bi-chat-left-text
-                            |  #{publicacion.comentarios.length}
+                            |  #{publicacion.imagenes && publicacion.imagenes.length > 0 ? publicacion.imagenes[0].comentarios.length : 0}
 
                     form(
                         action=`/publicaciones/eliminar/${publicacion.id}`

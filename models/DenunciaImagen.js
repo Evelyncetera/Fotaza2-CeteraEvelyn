@@ -23,7 +23,7 @@ const DenunciaImagen = sequelize.define(
         usuario_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            reference: {
+            references: {
                 model: 'usuario',
                 key: 'id'
             }
@@ -31,7 +31,7 @@ const DenunciaImagen = sequelize.define(
         imagen_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            reference: {
+            references: {
                 model: 'imagen',
                 key: 'id'
             }
@@ -53,10 +53,10 @@ const DenunciaImagen = sequelize.define(
     }
 );
 
-Usuario.hasMany(DenunciaImagen, { foreingKey: 'usuario_id'});
-DenunciaImagen.belongsTo(Usuario, { foreingKey: 'usuario_id'});
+Usuario.hasMany(DenunciaImagen, { foreignKey: 'usuario_id'});
+DenunciaImagen.belongsTo(Usuario, { foreignKey: 'usuario_id'});
 
-Imagen.hasMany(DenunciaImagen, {foreingKey: 'imagen_id'});
-DenunciaImagen.belongsTo(Imagen, {foreingKey: 'imagen_id'});
+Imagen.hasMany(DenunciaImagen, {foreignKey: 'imagen_id'});
+DenunciaImagen.belongsTo(Imagen, {foreignKey: 'imagen_id'});
 
 export default DenunciaImagen;

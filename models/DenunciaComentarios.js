@@ -23,7 +23,7 @@ const DenunciaComentario = sequelize.define(
         usuario_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            reference: {
+            references: {
                 model: 'usuario',
                 key: 'id'
             }
@@ -31,7 +31,7 @@ const DenunciaComentario = sequelize.define(
         comentario_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            reference: {
+            references: {
                 model: 'comentario',
                 key: 'id'
             }
@@ -53,10 +53,10 @@ const DenunciaComentario = sequelize.define(
     }
 );
 
-Usuario.hasMany(DenunciaComentario, { foreingKey: 'usuario_id'});
-DenunciaComentario.belongsTo(Usuario, { foreingKey: 'usuario_id'});
+Usuario.hasMany(DenunciaComentario, { foreignKey: 'usuario_id'});
+DenunciaComentario.belongsTo(Usuario, { foreignKey: 'usuario_id'});
 
-Comentario.hasMany(DenunciaComentario, {foreingKey: 'comentario_id'});
-DenunciaComentario.belongsTo(Comentario, {foreingKey: 'comentario_id'});
+Comentario.hasMany(DenunciaComentario, {foreignKey: 'comentario_id'});
+DenunciaComentario.belongsTo(Comentario, {foreignKey: 'comentario_id'});
 
 export default DenunciaComentario;
