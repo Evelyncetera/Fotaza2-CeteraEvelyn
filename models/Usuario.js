@@ -1,5 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from "./config.js";
+import Rol from './Rol.js';
 
 class User extends Model {}
 
@@ -27,9 +28,13 @@ User.init (
             type: DataTypes.STRING,
             allowNull: false
         },
-        rol: {
-            type: DataTypes.STRING,
-            defaultValue: 'usuario'
+        rol_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'rol',
+                key: 'id'
+            }
         },
         activo: {
             type: DataTypes.BOOLEAN,
@@ -47,7 +52,18 @@ User.init (
         createdAt: 'createdAt',
         updatedAt: false,
         paranoid: true, //borrado logico
+        
     }
 );
+
+Rol.hasMany(User, {
+    foreignKey: 'rol_id',
+    as: 'usuarios'
+});
+
+User.belongsTo(Rol, {
+    foreignKey: 'rol_id',
+    as: 'rol'
+});
 
 export default User;

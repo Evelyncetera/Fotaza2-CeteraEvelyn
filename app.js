@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import './models/Rol.js';
 import './models/Usuario.js';
 import './models/Publicacion.js';
 import './models/Imagen.js';
@@ -22,6 +23,7 @@ import tagRoutes from './routes/tagRoutes.js';
 import followerRoutes from './routes/followerRoutes.js';
 import perfilRoutes from './routes/perfilRoutes.js';
 import denunciaRoutes from './routes/denunciaRoutes.js';
+
 import { upload } from './middlewares/multerCloudinary.js';
 import './middlewares/cloudinary.js';
 import { usuarioMiddleware } from './middlewares/authMiddle.js';

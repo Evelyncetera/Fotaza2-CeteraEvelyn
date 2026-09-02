@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import User from '../models/Usuario.js';
+import Rol from '../models/Rol.js';
 
 export const mostrarUsuario = (req,res) => {
     res.render('auth/registro');
@@ -21,11 +22,24 @@ export const registroUsuario = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const passHasheada = await bcrypt.hash(password, salt);
 
+        const rolComun = await Rol.findOne({
+            where: {
+                nombre: 'comun'
+            }
+        });
+
+        if (!rolComun) {
+            return res.status(500).send(
+                'No se encontró el rol de usuario común.'
+            );
+        }
+
         await User.create({
-            nombre: nombre, 
-            apellido: apellido,
-            email: email,
-            password_hash: passHasheada
+            nombre,
+            apellido,
+            email,
+            password_hash: passHasheada,
+            rol_id: rolComun.id
         });
 
         res.send('Usuario creado con éxito!');
