@@ -25,6 +25,10 @@ export const ejecutarSeed = async (queryInterface = null) => {
         //usuarios comunes
         { nombre: 'UsuarioA', apellido: 'Demo', email: 'usuarioA@fotaza.com', password_hash: pass, rol_id: rolComun.id, avatar: 'https://res.cloudinary.com/tu-cloud/image/upload/v1/avatar1.jpg' },
         { nombre: 'UsuarioB', apellido: 'Demo', email: 'usuarioB@fotaza.com', password_hash: pass, rol_id: rolComun.id, avatar: 'https://res.cloudinary.com/tu-cloud/image/upload/v1/avatar2.jpg' },
+        { nombre: 'UsuarioC', apellido: 'Demo', email: 'usuarioC@fotaza.com', password_hash: pass, rol_id: rolComun.id, avatar: 'https://res.cloudinary.com/tu-cloud/image/upload/v1/avatar1.jpg' },
+        { nombre: 'UsuarioD', apellido: 'Demo', email: 'usuarioD@fotaza.com', password_hash: pass, rol_id: rolComun.id, avatar: 'https://res.cloudinary.com/tu-cloud/image/upload/v1/avatar2.jpg' },
+        
+        
         //usuario validador
         {nombre: 'Validador', apellido: 'Demo', email: 'validador@fotaza.com', password_hash: pass, rol_id: rolValidador.id, activo: true}
     ]);
@@ -37,11 +41,11 @@ export const ejecutarSeed = async (queryInterface = null) => {
 
     await Imagen.bulkCreate([
         {
-            archivo: "https://res.cloudinary.com/tu-cloud/image/upload/v1/foto1.jpg",
+            archivo: "https://res.cloudinary.com/dlvrrops9/image/upload/v1781237614/fotaza2/uujzf0fdqnfycpfslvz1.jpg",
             publicacion_id: publicaciones[0].id
         },
         {
-            archivo: "https://res.cloudinary.com/tu-cloud/image/upload/v1/foto2.jpg",
+            archivo: "https://res.cloudinary.com/dlvrrops9/image/upload/v1781279773/fotaza2/h5fogrnyvx3ua3y4xc3h.jpg",
             publicacion_id: publicaciones[1].id
         }
     ]);

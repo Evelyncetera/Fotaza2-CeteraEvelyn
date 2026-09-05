@@ -1,7 +1,9 @@
 import { sequelize, conexionDB } from "../../models/config.js";
-import Comentario from "../../models/Comentario.js";
-import Tag from "../../models/Tag.js";
-import PublicacionTag from "../../models/PublicacionTag.js";
+import "../../models/Comentario.js";
+import "../../models/Tag.js";
+import  "../../models/PublicacionTag.js";
+import '../../models/DenunciaImagen.js';
+import '../../models/DenunciaComentarios.js';
 import { ejecutarSeed } from "../seeds.js"
 
 async function init() {

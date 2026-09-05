@@ -69,10 +69,15 @@ npm start
 
 Tras ejecutar `npm run db:init`, puedes acceder al sistema con los siguientes usuarios cargados en el seeder:
 
-| Usuario   | Email                                            | Contraseña |
-| --------- | ------------------------------------------------ | ---------- |
-| UsuarioA  | [usuarioA@fotaza.com](mailto:usuarioA@fotaza.com)|   123456   |
-| UsuarioB  | [usuarioB@fotaza.com](mailto:usuarioB@fotaza.com)|   123456   |
+| Usuario   | Email                                              | Contraseña |
+| --------- | -------------------------------------------------- | ---------- |
+| UsuarioA  | [usuarioA@fotaza.com](mailto:usuarioA@fotaza.com)  |   123456   |
+| UsuarioB  | [usuarioB@fotaza.com](mailto:usuarioB@fotaza.com)  |   123456   |
+| UsuarioC  | [usuarioB@fotaza.com](mailto:usuarioB@fotaza.com)  |   123456   |
+| UsuarioD  | [usuarioB@fotaza.com](mailto:usuarioB@fotaza.com)  |   123456   |
+| --------  | -------------------------------------------------- | ---------- |
+| Validador | [validador@fotaza.com](mailto:validador@fotaza.com)|   123456   |
+
 
 ## 📝 Notas de Implementación
 

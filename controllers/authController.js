@@ -58,7 +58,15 @@ export const validarUsuario = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const usuario = await User.findOne({ where: { email } });
+        const usuario = await User.findOne({ 
+            where: { email }, 
+            include: [
+                        {
+                            model: Rol,
+                            as: 'rol'
+                        }
+                    ]
+        });
         
         if (!usuario) {
             return res.send('El usuario no existe.');
@@ -71,6 +79,7 @@ export const validarUsuario = async (req, res) => {
         }
 
         req.session.usuarioId = usuario.id;
+        req.session.usuarioRol = usuario.rol.nombre;
         res.redirect('/');
 
     } catch (error) {

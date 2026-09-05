@@ -50,9 +50,11 @@ export const mostrarHome = async (req, res) => {
             );
         }
 
+        /* para debug
+        
         console.log(
             JSON.stringify(publicaciones[0], null, 2)
-        );
+        );*/
 
         
         res.render('home', {

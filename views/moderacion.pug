@@ -1,0 +1,67 @@
+extends layout
+
+block content
+
+    if mensaje
+        .alert(
+            class=`alert-${tipoMensaje}`
+            role="alert"
+        )
+            = mensaje
+
+    h1.mb-4 Moderación de publicaciones
+
+    if casos.length === 0
+
+        p No hay publicaciones pendientes de revisión.
+
+    else
+
+        each caso in casos
+
+            .card.mb-4.shadow-sm
+
+                if caso.imagen
+                    img.card-img-top(
+                        src=caso.imagen.archivo
+                        alt=caso.publicacion.titulo
+                    )
+
+                .card-body
+
+                    h5.card-title= caso.publicacion.titulo
+
+                    if caso.publicacion.descripcion
+                        p.card-text= caso.publicacion.descripcion
+
+                    p
+                        strong Denuncias:
+                        |  #{caso.cantidadDenuncias}
+
+                    p
+                        strong ID publicación:
+                        |  #{caso.publicacion.id}
+
+                    p
+                        strong ID imagen:
+                        |  #{caso.imagen.id}
+
+            .d-flex.gap-2.mt-3
+
+                form(
+                    action=`/moderacion/baja/${caso.publicacion.id}`
+                    method="POST"
+                )
+                    button.btn.btn-danger(
+                        type="submit"
+                    )
+                        | Dar de baja
+
+                form(
+                    action=`/moderacion/desestimar/${caso.imagen.id}`
+                    method="POST"
+                )
+                    button.btn.btn-secondary(
+                        type="submit"
+                    )
+                        | Desestimar denuncias

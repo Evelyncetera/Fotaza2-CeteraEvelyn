@@ -23,6 +23,7 @@ import tagRoutes from './routes/tagRoutes.js';
 import followerRoutes from './routes/followerRoutes.js';
 import perfilRoutes from './routes/perfilRoutes.js';
 import denunciaRoutes from './routes/denunciaRoutes.js';
+import moderacionRoutes from './routes/moderacionRoutes.js';
 
 import { upload } from './middlewares/multerCloudinary.js';
 import './middlewares/cloudinary.js';
@@ -64,6 +65,7 @@ app.use('/interes', interesRoutes);
 app.use('/follower', followerRoutes);
 app.use('/perfil', perfilRoutes);
 app.use('/denuncias', denunciaRoutes);
+app.use('/moderacion', moderacionRoutes);
 
 //404
 app.use((req, res) => {

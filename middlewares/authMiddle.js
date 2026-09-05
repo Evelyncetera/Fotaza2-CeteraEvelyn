@@ -17,6 +17,18 @@ export const usuarioMiddleware = (req, res, next) => {
     res.locals.usuarioAvatar =
         req.session.usuarioAvatar || null;
 
+    res.locals.usuarioRol =
+        req.session.usuarioRol || null;
+
+    res.locals.mensaje =
+        req.session.mensaje || null;
+
+    res.locals.tipoMensaje =
+        req.session.tipoMensaje || 'info';
+
+    delete req.session.mensaje;
+    delete req.session.tipoMensaje;
+    
     next();
 };
 

@@ -36,7 +36,8 @@ const Publicacion = sequelize.define(
                 'borrador',
                 'publicada',
                 'archivada',
-                'eliminada'
+                'eliminada', //borrado por el autor
+                'bajada'     // bajado por el validador - denuncias > 3 
             ),
             allowNull: false,
             defaultValue: 'publicada'
