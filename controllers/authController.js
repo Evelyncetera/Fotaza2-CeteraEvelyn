@@ -11,12 +11,24 @@ export const registroUsuario = async (req, res) => {
 
     try {
         if(password !== repetir_password) {
-            return res.send('Las contraseñas no coinciden. Intentá nuevamente')
+            req.session.mensaje = 'Las contraseñas no coinciden. Intentá nuevamente';
+            req.session.tipoMensaje = 'warning';
+
+            return res.redirect('/auth/registro');
         }
 
-        const userExistente = await User.findOne({ where: { email: email}});
+        const userExistente = await User.findOne({ 
+            where: { 
+                email: email
+            }
+        });
+
         if (userExistente) {
-            return res.send('El mail ya está registrado.');
+
+            req.session.mensaje = 'El mail ya está registrado.';
+            req.session.tipoMensaje = 'warning';
+
+            return res.redirect('/auth/registro');
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -29,9 +41,8 @@ export const registroUsuario = async (req, res) => {
         });
 
         if (!rolComun) {
-            return res.status(500).send(
-                'No se encontró el rol de usuario común.'
-            );
+
+            return next( new Error ('No se encontró el rol de usuario común.'));
         }
 
         await User.create({
@@ -42,11 +53,14 @@ export const registroUsuario = async (req, res) => {
             rol_id: rolComun.id
         });
 
-        res.send('Usuario creado con éxito!');
+        req.session.mensaje = 'Usuario creado con éxito!';
+        req.session.tipoMensaje = 'success';
+
+        return res.redirect('/auth/login');
 
     } catch(error){
         console.error('Error al registrar usuario: ', error);
-        res.send('Hubo un error en el servidor al intentar registrarse.');
+        next(error);
     }
 };
 
@@ -69,13 +83,27 @@ export const validarUsuario = async (req, res) => {
         });
         
         if (!usuario) {
-            return res.send('El usuario no existe.');
+            req.session.mensaje = 'No existe un usuario registrado con ese correo.';
+            req.session.tipoMensaje = 'warning';
+
+            return res.redirect('/auth/login');
         }
 
         const esCorrecta = await bcrypt.compare(password, usuario.password_hash);
 
         if (!esCorrecta) {
-            return res.send('Contraseña incorrecta.');
+            
+            req.session.mensaje ='La contraseña ingresada es incorrecta.';
+            req.session.tipoMensaje = 'warning';
+
+            return res.redirect('/auth/login');
+        }
+
+        if (!usuario.activo) {
+            req.session.mensaje ='Tu cuenta se encuentra inactiva debido a reiteradas infracciones. No podés iniciar sesión.';
+            req.session.tipoMensaje = 'danger';
+
+            return res.redirect('/auth/login');
         }
 
         req.session.usuarioId = usuario.id;
@@ -84,7 +112,8 @@ export const validarUsuario = async (req, res) => {
 
     } catch (error) {
         console.error('Error al iniciar sesión:', error);
-        res.send('Error en el servidor.');
+
+        next(error);
     }
 };
 
@@ -93,9 +122,7 @@ export const cerrarSesion = (req, res) => {
     req.session.destroy((error) => {
 
         if (error) {
-            return res.send(
-                'Error al cerrar sesión'
-            );
+            return next(error);
         }
 
         res.redirect('/');

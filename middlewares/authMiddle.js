@@ -9,27 +9,54 @@ export const esUsuarioAutenticado = (req, res, next) => {
     res.redirect('/auth/login');
 };
 
-export const usuarioMiddleware = (req, res, next) => {
+export const usuarioMiddleware = async (req, res, next) => {
+    try {
+        res.locals.usuarioLogueado = null;
+        res.locals.usuarioAvatar = null;
+        res.locals.usuarioRol = null;
 
-    res.locals.usuarioLogueado =
-        req.session.usuarioId || null;
+        res.locals.mensaje =
+            req.session.mensaje || null;
 
-    res.locals.usuarioAvatar =
-        req.session.usuarioAvatar || null;
+        res.locals.tipoMensaje =
+            req.session.tipoMensaje || 'info';
 
-    res.locals.usuarioRol =
-        req.session.usuarioRol || null;
+        delete req.session.mensaje;
+        delete req.session.tipoMensaje;
 
-    res.locals.mensaje =
-        req.session.mensaje || null;
+        if (!req.session.usuarioId) {
+            return next();
+        }
 
-    res.locals.tipoMensaje =
-        req.session.tipoMensaje || 'info';
+        const usuario = await User.findByPk(
+            req.session.usuarioId,
+            {
+                attributes: [
+                    'id',
+                    'activo',
+                    'avatar'
+                ]
+            }
+        );
 
-    delete req.session.mensaje;
-    delete req.session.tipoMensaje;
-    
-    next();
+        if (!usuario || !usuario.activo) {
+            return req.session.destroy(() => {
+                next();
+            });
+        }
+
+        res.locals.usuarioLogueado = usuario.id;
+        res.locals.usuarioAvatar =
+            usuario.avatar || null;
+
+        res.locals.usuarioRol =
+            req.session.usuarioRol || null;
+
+        next();
+
+    } catch (error) {
+        next(error);
+    }
 };
 
 export const esValidador = async (req, res, next) => {

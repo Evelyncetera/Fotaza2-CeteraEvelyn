@@ -1,6 +1,14 @@
 extends ../layout
 
 block content
+
+    if mensaje
+        .alert(
+            class=`alert-${tipoMensaje}`
+            role="alert"
+        )
+            = mensaje
+            
     .container
         .row.justify-content-center
             .col-md-6.col-lg-4
