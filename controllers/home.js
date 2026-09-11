@@ -8,6 +8,8 @@ import Follower from '../models/Follower.js';
 
 export const mostrarHome = async (req, res) => {
     try {
+        const usuarioId = req.session?.usuarioId || null;
+
         const publicaciones = await Publicacion.findAll({
 
             include: [
@@ -15,6 +17,13 @@ export const mostrarHome = async (req, res) => {
                 {
                     model: Imagen,
                     as: 'imagenes',
+                    ...(usuarioId ? {} : {
+                                where: {
+                                    licencia: 'sin_copyright'
+                                },
+                                required: true
+                            }
+                        ),
                     include: [
                         {
                             model: Valoracion,
@@ -35,7 +44,6 @@ export const mostrarHome = async (req, res) => {
             order: [['createdAt', 'DESC']]
         });
         
-        const usuarioId = req.session?.usuarioId || null;
         let seguidos = [];
 
         if (usuarioId) {

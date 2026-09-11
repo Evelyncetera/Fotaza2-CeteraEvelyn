@@ -12,6 +12,8 @@ export const buscarPublicaciones = async (req, res) => {
 
     try {
         const { titulo, fecha } = req.query;
+        const usuarioId = req.session?.usuarioId || null;
+
         const where = {};
 
         if (titulo) {
@@ -36,6 +38,13 @@ export const buscarPublicaciones = async (req, res) => {
                 {
                     model: Imagen,
                     as: 'imagenes',
+                    ...(usuarioId ? {} : {
+                            where: {
+                                licencia: 'sin_copyright'
+                            },
+                            required: true
+                        }
+                    ),
                     include: [
                         {
                             model: Valoracion,
@@ -44,19 +53,20 @@ export const buscarPublicaciones = async (req, res) => {
                         {
                             model: Interes,
                             as: 'intereses'
+                        },
+                        {
+                            model: Comentario,
+                            as: 'comentarios',
+                            include: [Usuario]
                         }
                     ]
-                },
-                {
-                    model: Comentario,
-                    as: 'comentarios',
-                    include: [Usuario]
                 }
+                
             ],
             order: [['createdAt', 'DESC']]
         });
 
-        const usuarioId = req.session?.usuarioId || null;
+        
         let seguidos = [];
 
             if (usuarioId) {
@@ -67,9 +77,7 @@ export const buscarPublicaciones = async (req, res) => {
                     }
                 });
 
-                seguidos = seguimientos.map(
-                    seguimiento => seguimiento.seguido_id
-                );
+                seguidos = seguimientos.map( seguimiento => seguimiento.seguido_id);
             }
 
 
@@ -83,7 +91,7 @@ export const buscarPublicaciones = async (req, res) => {
 
         console.error(error);
 
-        res.send('Error al realizar la búsqueda');
+        res.status(500).send('Error al realizar la búsqueda');
     }
 };
 

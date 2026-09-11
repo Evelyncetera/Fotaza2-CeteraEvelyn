@@ -39,6 +39,29 @@ block content
                                 accept="image/*"
                             )
 
+                        .mb-3
+                            label.form-label Licencia
+
+                            select.form-select(
+                                name="licencia"
+                                required
+                            )
+                                option(value="sin_copyright") Sin copyright
+                                option(value="copyright") Con copyright
+
+                        .mb-3
+                            label.form-label Marca de agua
+
+                            input.form-control(
+                                type="text"
+                                name="marca_de_agua"
+                                placeholder="Ej: © Usuario Fotaza"
+                            )
+
+                            .form-text
+                                | Se utilizará solamente para imágenes con copyright.
+
+
                         .form-check.mb-3
                             input.form-check-input(
                                 type="checkbox"

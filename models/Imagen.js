@@ -23,6 +23,18 @@ const Imagen = sequelize.define(
         archivo: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        licencia: {
+            type: DataTypes.ENUM(
+                'sin_copyright',
+                'copyright',
+            ),
+            allowNull: false,
+            defaultValue: 'sin_copyright'
+        },
+        marca_de_agua :{
+            type: DataTypes.STRING,
+            allowNull: true
         }
     },
     {
