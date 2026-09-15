@@ -61,6 +61,7 @@ export const crearPublicacion = async (req, res) => {
                                     opacity: 70
                                 },
                                 {
+                                    flags: 'layer_apply',
                                     gravity: 'south_east',
                                     x: 20,
                                     y: 20
@@ -72,7 +73,7 @@ export const crearPublicacion = async (req, res) => {
 
                 await Imagen.create({
                     publicacion_id: nuevaPublicacion.id,
-                    archivo: req.file.path,
+                    archivo: archivoFinal,
                     licencia,
                     marca_de_agua: marcaAgua
                 });
