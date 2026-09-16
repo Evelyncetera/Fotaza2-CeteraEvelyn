@@ -275,19 +275,39 @@ block content
 
 
                                         // COMENTARIOS DE ESTA IMAGEN
-                                        h6.mt-3.border-top.pt-3
-                                            | Comentarios
+                                        .d-flex.justify-content-between.align-items-center.mt-3.border-top.pt-3.mb-2
+
+                                            h6.mb-0
+                                                | Comentarios
+
+                                            if usuarioLogueado && usuarioLogueado == publicacion.User.id
+
+                                                form(
+                                                    action=`/imagenes/${imagen.id}/comentarios/toggle`
+                                                    method="POST"
+                                                )
+                                                    if imagen.comentarios_abiertos
+                                                        button.btn.btn-outline-danger.btn-sm(
+                                                            type="submit"
+                                                        )
+                                                            i.bi.bi-lock
+                                                            |  Cerrar comentarios
+                                                    else
+
+                                                        button.btn.btn-outline-success.btn-sm(
+                                                            type="submit"
+                                                        )
+                                                            i.bi.bi-unlock
+                                                            |  Abrir comentarios
 
                                         if imagen.comentarios && imagen.comentarios.length > 0
 
                                             .overflow-auto(
                                                 style="max-height: 180px;"
                                             )
-
                                                 each comentario in imagen.comentarios
 
                                                     .mb-2
-
                                                         p.small.mb-1
                                                             strong #{comentario.User.nombre}:
                                                             |  #{comentario.texto}
@@ -298,7 +318,6 @@ block content
                                                                 action=`/denuncias/comentario/${comentario.id}`
                                                                 method="POST"
                                                             )
-
                                                                 select.form-select.form-select-sm(
                                                                     name="motivo"
                                                                     required
@@ -320,7 +339,6 @@ block content
                                                                     type="submit"
                                                                 )
                                                                     i.bi.bi-flag
-
                                         else
                                             p.small.text-muted
                                                 | No hay comentarios.
