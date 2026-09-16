@@ -3,6 +3,7 @@ import Imagen from '../models/Imagen.js';
 import Publicacion from '../models/Publicacion.js';
 import Usuario from '../models/Usuario.js';
 import Notificacion from '../models/Notificacion.js';
+import Mensaje from '../models/Mensaje.js';
 
 export const marcarInteres = async (req, res, next) => {
 
@@ -48,6 +49,18 @@ export const marcarInteres = async (req, res, next) => {
             });
 
         if (interesExistente) {
+
+            const tieneMensajes = await Mensaje.findOne({
+                where: {
+                    interes_id: interesExistente.id
+                }
+            });
+
+            if (tieneMensajes) {
+                req.session.mensaje = 'No podés quitar el interés porque ya existe una conversación asociada.';
+                req.session.tipoMensaje = 'warning';
+                return res.redirect('/');
+            }
 
             await interesExistente.destroy();
             req.session.mensaje = 'Ya no estás interesado en esta imagen.';

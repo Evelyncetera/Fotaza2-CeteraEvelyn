@@ -8,26 +8,38 @@ import Usuario from "../models/Usuario.js";
 export const denunciarImagen = async (req, res) => {
     try {
         if (!req.session.usuarioId) {
-            return res.status(401).json({ mensaje: "Debes iniciar sesión para denunciar contenido" });
+            return res.redirect('/auth/login');
         }
 
         const { id } = req.params;
         const { motivo, descripcion } = req.body;
 
         if (!motivo) {
-            return res.status(400).json({ mensaje: "El motivo de la denuncia es obligatorio" });
+            req.session.mensaje = 'El motivo de la denuncia es obligatorio.';
+            req.session.tipoMensaje = 'warning';
+            return res.redirect('/');
+        }
+
+        const descripcionLimpia = descripcion?.trim();
+        const regex = /[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]/;
+        
+        if (!descripcionLimpia || !regex.test(descripcionLimpia)) {
+            req.session.mensaje ='La descripción debe contener texto válido.';
+            req.session.tipoMensaje ='warning';
+
+            return res.redirect('/');
         }
 
         const imagen = await Imagen.findByPk(id);
         if (!imagen) {
-            return res.status(404).json({
-                mensaje: "La imagen no existe",
-            });
+            req.session.mensaje = 'La imagen no existe.';
+            req.session.tipoMensaje = 'warning';
+            return res.redirect('/');
         }
 
         await DenunciaImagen.create({
             motivo,
-            descripcion: descripcion || null,
+            descripcion: descripcionLimpia,
             usuario_id: req.session.usuarioId,
             imagen_id: id,
         });
@@ -58,7 +70,9 @@ export const denunciarImagen = async (req, res) => {
             return res.redirect("/");
         }
         console.error(error);
-        res.status(500).json({ mensaje: "Error al registrar la denuncia" });
+        req.session.mensaje = 'Error al registrar la denuncia.';
+        req.session.tipoMensaje = 'danger';
+        return res.redirect('/');
     }
 };
 
@@ -228,9 +242,9 @@ export const listarDenunciasComentarios = async (req, res) => {
             error
         );
 
-        res.status(500).send(
-            'Error al cargar denuncias de comentarios'
-        );
+        req.session.mensaje = 'Error al cargar denuncias de comentarios.';
+        req.session.tipoMensaje = 'danger';
+        res.redirect('/');
     }
 };
 export const eliminarComentarioDenunciado = async (req,res) => {
@@ -256,7 +270,9 @@ export const eliminarComentarioDenunciado = async (req,res) => {
 
         if(!comentario) {
 
-            return res.status(404).send('El comentario no existe');
+            req.session.mensaje = 'El comentario no existe.';
+            req.session.tipoMensaje = 'warning';
+            return res.redirect('/denuncias/comentarios');
         }
 
         if (Number(comentario.Imagen.publicacion.usuario_id) !== Number(req.session.usuarioId)){
@@ -284,7 +300,9 @@ export const eliminarComentarioDenunciado = async (req,res) => {
         
         console.error(error);
 
-        res.status(500).send('Error al eliminar el comentario');
+        req.session.mensaje = 'Error al eliminar el comentario.';
+        req.session.tipoMensaje = 'danger';
+        return res.redirect('/denuncias/comentarios');
     }    
 }; 
 

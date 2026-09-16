@@ -16,7 +16,9 @@ export const buscarPublicaciones = async (req, res) => {
         const { titulo, fecha, autor, tag, licencia } = req.query;
         const usuarioId = req.session?.usuarioId || null;
 
-        const wherePubli = {};
+        const wherePubli = {
+            estado: 'publicada'
+        };
 
         if (titulo?.trim()) {
             wherePubli.titulo = {[Op.iLike]: `%${titulo.trim()}%`};
@@ -186,7 +188,9 @@ export const buscarPublicaciones = async (req, res) => {
 
         console.error(error);
 
-        res.status(500).send('Error al realizar la búsqueda');
+        req.session.mensaje = 'Error al realizar la búsqueda.';
+        req.session.tipoMensaje = 'danger';
+        res.redirect('/');
     }
 };
 

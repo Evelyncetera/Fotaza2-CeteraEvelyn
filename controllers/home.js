@@ -26,7 +26,9 @@ export const mostrarHome = async (req, res) => {
         }
 
         const publicaciones = await Publicacion.findAll({
-
+            where: {
+                estado: 'publicada'
+            },
             include: [
                 Usuario,
                 {
@@ -162,6 +164,8 @@ export const mostrarHome = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error al cargar el home");
+        req.session.mensaje = 'Error al cargar el home.';
+        req.session.tipoMensaje = 'danger';
+        res.redirect('/');
     }
 };

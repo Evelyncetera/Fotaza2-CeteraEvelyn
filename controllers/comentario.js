@@ -70,6 +70,8 @@ export const crearComentario = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al crear comentario');
+        req.session.mensaje = 'Error al crear comentario.';
+        req.session.tipoMensaje = 'danger';
+        return res.redirect('/');
     }
 };

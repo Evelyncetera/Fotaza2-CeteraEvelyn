@@ -22,10 +22,16 @@ export const seguirUsuario = async (req, res) => {
         const seguidor_id = req.session.usuarioId;
         const { seguido_id } = req.body;
 
+        if (!seguido_id) {
+            req.session.mensaje = 'Faltan datos.';
+            req.session.tipoMensaje = 'warning';
+            return res.redirect('/');
+        }
+
         if (seguidor_id == seguido_id) {
-            return res.send(
-                'No podés seguirte a vos mismo'
-            );
+            req.session.mensaje = 'No podés seguirte a vos mismo.';
+            req.session.tipoMensaje = 'warning';
+            return res.redirect('/');
         }
 
         const seguimientoExistente = await Follower.findOne({
@@ -36,9 +42,9 @@ export const seguirUsuario = async (req, res) => {
         });
 
         if (seguimientoExistente) {
-            return res.send(
-                'Ya seguís a este usuario'
-            );
+            req.session.mensaje = 'Ya seguís a este usuario.';
+            req.session.tipoMensaje = 'warning';
+            return res.redirect('/');
         }
 
         await Follower.create({
@@ -56,9 +62,9 @@ export const seguirUsuario = async (req, res) => {
 
         console.error(error);
 
-        res.status(500).send(
-            'Error al seguir usuario'
-        );
+        req.session.mensaje = 'Error al seguir usuario.';
+        req.session.tipoMensaje = 'danger';
+        res.redirect('/');
     }
 };
 
@@ -67,8 +73,18 @@ export const dejarDeSeguir = async (req, res) => {
 
     try {
 
+        if (!req.session.usuarioId) {
+            return res.redirect('/auth/login');
+        }
+
         const seguidor_id = req.session.usuarioId;
         const { seguido_id } = req.body;
+
+        if (!seguido_id) {
+            req.session.mensaje = 'Faltan datos.';
+            req.session.tipoMensaje = 'warning';
+            return res.redirect('/');
+        }
 
         await Follower.destroy({
             where: {
@@ -83,9 +99,9 @@ export const dejarDeSeguir = async (req, res) => {
 
         console.error(error);
 
-        res.status(500).send(
-            'Error al dejar de seguir'
-        );
+        req.session.mensaje = 'Error al dejar de seguir.';
+        req.session.tipoMensaje = 'danger';
+        res.redirect('/');
     }
 };
 
@@ -128,7 +144,8 @@ export const mostrarPublicacionesSeguidos = async (req, res, next) => {
                 where: {
                     usuario_id: {
                         [Op.in]: seguidos
-                    }
+                    },
+                    estado: 'publicada'
                 },
                 include: [
                     Usuario,

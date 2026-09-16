@@ -20,7 +20,8 @@ export const mostrarPerfil = async (req, res) => {
 
         const publicaciones = await Publicacion.findAll({
             where: {
-                usuario_id: req.session.usuarioId
+                usuario_id: req.session.usuarioId,
+                estado: 'publicada'
             },
             include: [
                 {
@@ -83,9 +84,9 @@ export const mostrarPerfil = async (req, res) => {
 
         console.error(error);
 
-        res.status(500).send(
-            'Error al cargar el perfil'
-        );
+        req.session.mensaje = 'Error al cargar el perfil.';
+        req.session.tipoMensaje = 'danger';
+        res.redirect('/');
     }
 };
 export const mostrarPerfilPublico = async (req, res, next) => {
@@ -113,7 +114,8 @@ export const mostrarPerfilPublico = async (req, res, next) => {
         const publicaciones = await Publicacion.findAll({
                 where: {
                     usuario_id:
-                        usuario.id
+                        usuario.id,
+                    estado: 'publicada'
                 },
                 include: [
                     {

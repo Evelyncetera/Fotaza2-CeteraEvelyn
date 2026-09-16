@@ -14,10 +14,12 @@ import '../models/PublicacionTag.js';
 export const mostrarPublicacion = async (req, res, next) => {
     try {
         const usuarioId = req.session.usuarioId;
-        const publicacion = await Publicacion.findByPk(
-                req.params.id,
-                {
-                    include: [
+        const publicacion = await Publicacion.findOne({
+                where: {
+                    id: req.params.id,
+                    estado: 'publicada'
+                },
+                include: [
                         Usuario,
                         {
                             model: Tag,
@@ -279,7 +281,9 @@ export const crearPublicacion = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al crear publicación');
+        req.session.mensaje = 'Error al crear publicación.';
+        req.session.tipoMensaje = 'danger';
+        res.redirect('/');
     }
 };
 
@@ -294,18 +298,18 @@ export const eliminarPublicacion = async (req, res) => {
         );
 
         if (!publicacion) {
-            return res.send(
-                'La publicación no existe'
-            );
+            req.session.mensaje = 'La publicación no existe.';
+            req.session.tipoMensaje = 'warning';
+            return res.redirect('/');
         }
 
         if (
             publicacion.usuario_id !==
             req.session.usuarioId
         ) {
-            return res.send(
-                'No tenés permisos para eliminar esta publicación'
-            );
+            req.session.mensaje = 'No tenés permisos para eliminar esta publicación.';
+            req.session.tipoMensaje = 'danger';
+            return res.redirect('/');
         }
         await publicacion.update({
             estado: 'eliminada'
@@ -317,8 +321,8 @@ export const eliminarPublicacion = async (req, res) => {
     } catch (error) {
 
         console.error(error);
-        res.status(500).send(
-            'Error al eliminar la publicación'
-        );
+        req.session.mensaje = 'Error al eliminar la publicación.';
+        req.session.tipoMensaje = 'danger';
+        res.redirect('/');
     }
 };

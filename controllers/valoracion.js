@@ -80,8 +80,8 @@ export const crearValoracion = async (req, res) => {
 
         console.error(error);
 
-        res.status(500).send(
-            'Error al registrar la valoración'
-        );
+        req.session.mensaje = 'Error al registrar la valoración.';
+        req.session.tipoMensaje = 'danger';
+        return res.redirect('/');
     }
 };

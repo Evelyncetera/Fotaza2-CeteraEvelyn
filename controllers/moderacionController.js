@@ -59,7 +59,9 @@ export const mostrarModeracion = async (req, res) => {
     } catch (error) {
         console.error('Error al cargar moderación', error);
 
-        res.status(500).send('Error al cargar la sección de moderación');
+        req.session.mensaje = 'Error al cargar la sección de moderación.';
+        req.session.tipoMensaje = 'danger';
+        res.redirect('/');
     }
 };
 
@@ -70,9 +72,9 @@ export const darDeBajaPublicacion = async (req, res) => {
         const publicacion = await Publicacion.findByPk(id);
 
         if (!publicacion) {
-            return res.status(404).send(
-                'La publicación no existe'
-            );
+            req.session.mensaje = 'La publicación no existe.';
+            req.session.tipoMensaje = 'warning';
+            return res.redirect('/moderacion');
         }
 
         await publicacion.update({
@@ -80,6 +82,23 @@ export const darDeBajaPublicacion = async (req, res) => {
         });
 
         await publicacion.destroy();
+
+        const imagenesPublicacion = await Imagen.findAll({
+            where: {
+                publicacion_id: id
+            },
+            attributes: ['id']
+        });
+
+        const imagenIds = imagenesPublicacion.map(img => img.id);
+
+        if (imagenIds.length > 0) {
+            await DenunciaImagen.destroy({
+                where: {
+                    imagen_id: imagenIds
+                }
+            });
+        }
 
         const cantidadBajadas = await Publicacion.count({
             where: {
@@ -113,9 +132,9 @@ export const darDeBajaPublicacion = async (req, res) => {
             error
         );
 
-        res.status(500).send(
-            'Error al dar de baja la publicación'
-        );
+        req.session.mensaje = 'Error al dar de baja la publicación.';
+        req.session.tipoMensaje = 'danger';
+        res.redirect('/moderacion');
     }
 };
 
@@ -135,6 +154,8 @@ export const  desestimarDenuncias = async (req, res) => {
     } catch (error) {
         console.error('Error al desestimar las denuncias', error);
 
-        res.status(500).send('Error al desestimar las denuncias');
+        req.session.mensaje = 'Error al desestimar las denuncias.';
+        req.session.tipoMensaje = 'danger';
+        res.redirect('/moderacion');
     }
 };
