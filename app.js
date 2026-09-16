@@ -25,7 +25,7 @@ import perfilRoutes from './routes/perfilRoutes.js';
 import denunciaRoutes from './routes/denunciaRoutes.js';
 import moderacionRoutes from './routes/moderacionRoutes.js';
 import imagenRoutes from './routes/imagenRoutes.js';
-
+import mensajeRoutes from './routes/mensajeRoutes.js';
 import { upload } from './middlewares/multerCloudinary.js';
 import './middlewares/cloudinary.js';
 import { usuarioMiddleware } from './middlewares/authMiddle.js';
@@ -68,6 +68,7 @@ app.use('/perfil', perfilRoutes);
 app.use('/denuncias', denunciaRoutes);
 app.use('/moderacion', moderacionRoutes);
 app.use('/imagenes',imagenRoutes);
+app.use('/mensajes', mensajeRoutes);
 
 //404
 app.use((req, res) => {

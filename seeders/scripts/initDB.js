@@ -4,6 +4,7 @@ import "../../models/Tag.js";
 import  "../../models/PublicacionTag.js";
 import '../../models/DenunciaImagen.js';
 import '../../models/DenunciaComentarios.js';
+import '../../models/Mensaje.js';
 import { ejecutarSeed } from "../seeds.js"
 
 async function init() {

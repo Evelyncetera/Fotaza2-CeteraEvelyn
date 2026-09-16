@@ -1,0 +1,162 @@
+extends ../layout
+
+block content
+
+    if mensaje
+        .alert(
+            class=`alert-${tipoMensaje}`
+            role="alert"
+        )
+            = mensaje
+
+
+    h1.mb-4
+        | Mis conversaciones
+
+
+    .row
+
+        // COLUMNA IZQUIERDA
+        .col-md-4.mb-3
+
+            .card.shadow-sm
+
+                .card-header
+                    strong Conversaciones
+
+                .list-group.list-group-flush
+
+                    if intereses.length === 0
+
+                        .list-group-item.text-muted
+                            | Todavía no tenés conversaciones.
+
+                    else
+
+                        each interes in intereses
+
+                            - const soyInteresado = interes.usuario_id == usuarioId
+                            - const otroUsuario = soyInteresado ? interes.Imagen.publicacion.User : interes.User
+                            - const activa = interesActivo && interesActivo.id == interes.id
+
+                            a.list-group-item.list-group-item-action(
+                                href=`/mensajes/${interes.id}`
+                                class=activa ? 'active' : ''
+                            )
+
+                                strong.d-block
+                                    | #{otroUsuario.nombre} #{otroUsuario.apellido}
+
+                                if interes.Imagen && interes.Imagen.publicacion
+
+                                    small(
+                                        class=activa ? '' : 'text-muted'
+                                    )
+                                        = interes.Imagen.publicacion.titulo
+
+
+
+        // COLUMNA DERECHA
+        .col-md-8
+
+            if !interesActivo
+
+                .card.shadow-sm
+
+                    .card-body.text-center.py-5
+
+                        i.bi.bi-chat-dots.fs-1.text-muted
+
+                        h4.mt-3
+                            | Seleccioná una conversación
+
+                        p.text-muted.mb-0
+                            | Elegí una conversación del listado para ver los mensajes.
+
+
+            else
+
+                .card.shadow-sm.mb-3
+
+                    .card-body
+
+                        if interesActivo.Imagen && interesActivo.Imagen.publicacion
+
+                            h4.mb-1
+                                = interesActivo.Imagen.publicacion.titulo
+
+                            p.text-muted.mb-0
+                                | Conversación privada relacionada con esta imagen.
+
+
+                .card.shadow-sm.mb-3
+
+                    .card-body(
+                        style="height: 400px; overflow-y: auto;"
+                    )
+
+                        if mensajes.length === 0
+
+                            p.text-muted.text-center
+                                | Todavía no hay mensajes. Podés iniciar la conversación.
+
+                        else
+
+                            each mensajeItem in mensajes
+
+                                if mensajeItem.remitente_id == usuarioId
+
+                                    .d-flex.justify-content-end.mb-3
+
+                                        .border.rounded.p-2.bg-light(
+                                            style="max-width: 75%;"
+                                        )
+
+                                            strong.small
+                                                | Vos
+
+                                            p.mb-1
+                                                = mensajeItem.texto
+
+                                            small.text-muted
+                                                = new Date(mensajeItem.createdAt).toLocaleString('es-AR')
+
+                                else
+
+                                    .d-flex.justify-content-start.mb-3
+
+                                        .border.rounded.p-2(
+                                            style="max-width: 75%;"
+                                        )
+
+                                            strong.small
+                                                | #{mensajeItem.remitente.nombre} #{mensajeItem.remitente.apellido}
+
+                                            p.mb-1
+                                                = mensajeItem.texto
+
+                                            small.text-muted
+                                                = new Date(mensajeItem.createdAt).toLocaleString('es-AR')
+
+
+                .card.shadow-sm
+
+                    .card-body
+
+                        form(
+                            action=`/mensajes/${interesActivo.id}`
+                            method="POST"
+                        )
+
+                            textarea.form-control.mb-2(
+                                name="texto"
+                                rows="3"
+                                placeholder="Escribí un mensaje..."
+                                required
+                            )
+
+                            button.btn.btn-primary(
+                                type="submit"
+                            )
+                                i.bi.bi-send
+                                |  Enviar

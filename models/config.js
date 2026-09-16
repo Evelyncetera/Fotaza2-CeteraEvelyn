@@ -32,9 +32,9 @@ export const conexionDB = async () => {
         await sequelize.authenticate();
         console.log('Conexión a PostgreSQL realizada con éxito.');
 
-        await sequelize.sync();
+        /* await sequelize.sync();
         //await sequelize.sync({ alter: true });
-        console.log('Modelos sincronizados correctamente con las tablas de la Base de Datos');
+        console.log('Modelos sincronizados correctamente con las tablas de la Base de Datos'); */
     } catch(error) {
         console.log('Error al conectar Base de Datos: ', error);
         throw error;
