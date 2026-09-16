@@ -160,6 +160,22 @@ block content
                                                 span.badge.bg-success
                                                     | Sin copyright
 
+                                        // PROMEDIO Y CANTIDAD DE VALORACIONES
+                                        .d-flex.align-items-center.gap-2.mb-3
+
+                                            if imagen.cantidadValoraciones > 0
+
+                                                span.fw-semibold
+                                                    i.bi.bi-star-fill.text-warning
+                                                    |  #{imagen.promedioValoraciones}
+
+                                                span.text-muted.small
+                                                    | #{imagen.cantidadValoraciones} valoraciones
+
+                                            else
+
+                                                span.text-muted.small
+                                                    | Sin valoraciones
 
                                         // ACCIONES DE ESTA IMAGEN
                                         if usuarioLogueado
@@ -189,28 +205,39 @@ block content
                                                 // VALORACIÓN
                                                 if usuarioLogueado != publicacion.User.id
 
-                                                    form.d-flex.gap-1(
-                                                        action="/valoraciones/crear"
-                                                        method="POST"
-                                                    )
-                                                        input(
-                                                            type="hidden"
-                                                            name="imagen_id"
-                                                            value=imagen.id
+                                                    - const yaValoro = imagen.valoraciones && imagen.valoraciones.some(v => v.usuario_id == usuarioLogueado)
+
+                                                    if yaValoro
+
+                                                        span.badge.bg-light.text-dark.border
+                                                            i.bi.bi-check-circle
+                                                            |  Ya valoraste esta imagen
+
+                                                    else
+
+                                                        form.d-flex.gap-1(
+                                                            action="/valoraciones/crear"
+                                                            method="POST"
                                                         )
 
-                                                        select.form-select.form-select-sm(
-                                                            name="valor"
-                                                            required
-                                                            style="width: 70px;"
-                                                        )
-                                                            each val in [1,2,3,4,5]
-                                                                option(value=val)= val
+                                                            input(
+                                                                type="hidden"
+                                                                name="imagen_id"
+                                                                value=imagen.id
+                                                            )
 
-                                                        button.btn.btn-outline-warning.btn-sm(
-                                                            type="submit"
-                                                        )
-                                                            | Valorar
+                                                            select.form-select.form-select-sm(
+                                                                name="valor"
+                                                                required
+                                                                style="width: 70px;"
+                                                            )
+                                                                each val in [1,2,3,4,5]
+                                                                    option(value=val)= val
+
+                                                            button.btn.btn-outline-warning.btn-sm(
+                                                                type="submit"
+                                                            )
+                                                                | Valorar
 
 
                                                 // DENUNCIA DE ESTA IMAGEN

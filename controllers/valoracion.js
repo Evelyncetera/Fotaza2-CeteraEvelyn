@@ -11,6 +11,15 @@ export const crearValoracion = async (req, res) => {
         }
 
         const { imagen_id, valor } = req.body;
+        const valorNumerico = Number(valor);
+
+        if (!Number.isInteger(valorNumerico) || valorNumerico < 1 || valorNumerico > 5) {
+
+            req.session.mensaje = 'La valoración debe estar entre 1 y 5.';
+            req.session.tipoMensaje = 'warning';
+
+            return res.redirect('/');
+        }
 
         const imagen = await Imagen.findByPk(imagen_id, {
             include: [{
@@ -19,15 +28,19 @@ export const crearValoracion = async (req, res) => {
             }]
             
         });
-        console.log(JSON.stringify(imagen, null, 2));
+
         if (!imagen) {
-            return res.send('La imagen no existe');
+            req.session.mensaje = 'La imagen no existe.';
+            req.session.tipoMensaje = 'warning';
+
+            return res.redirect('/');
         }
 
         if (imagen.publicacion.usuario_id === req.session.usuarioId) {
-            return res.send(
-                'No podés valorar tus propias imágenes'
-            );
+            req.session.mensaje =  'No podés valorar tus propias imágenes.';
+            req.session.tipoMensaje = 'warning';
+
+            return res.redirect('/');
         }
 
         const valoracionExistente = await Valoracion.findOne({
@@ -38,18 +51,22 @@ export const crearValoracion = async (req, res) => {
         });
 
         if (valoracionExistente) {
-            return res.send(
-                'Ya valoraste esta imagen'
-            );
+            req.session.mensaje =  'Ya valoraste esta imagen.';
+            req.session.tipoMensaje = 'warning';
+
+            return res.redirect('/');
         }
 
         await Valoracion.create({
             usuario_id: req.session.usuarioId,
             imagen_id,
-            valor
+            valor: valorNumerico
         });
 
-        res.redirect('/');
+        req.session.mensaje =  'Valoración registrada correctamente.';
+        req.session.tipoMensaje = 'success';
+
+        return res.redirect('/');
 
     } catch (error) {
 

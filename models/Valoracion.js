@@ -1,5 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./config.js";
+import Usuario from './Usuario.js';
+import Imagen from './Imagen.js';
 
 const Valoracion = sequelize.define(
     'Valoracion',
@@ -12,12 +14,20 @@ const Valoracion = sequelize.define(
 
         usuario_id: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            references: {
+                model: 'usuario',
+                key: 'id'
+            }
         },
 
         imagen_id: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            references: {
+                model: 'imagen',
+                key: 'id'
+            }
         },
 
         valor: {
@@ -26,7 +36,8 @@ const Valoracion = sequelize.define(
 
             validate: {
                 min: 1,
-                max: 5
+                max: 5,
+                isInt: true
             }
         }
     },
@@ -34,29 +45,29 @@ const Valoracion = sequelize.define(
         sequelize,
         tableName: 'valoracion',
         freezeTableName: true,
-        timestamps: true
+        timestamps: true,
+
+        indexes: [
+            {
+                unique: true,
+                fields: [
+                    'usuario_id',
+                    'imagen_id'
+                ],
+                name: 'unique_valoracion_usuario_imagen'
+            }
+        ]
     }
 );
 
-import Usuario from './Usuario.js';
-import Imagen from './Imagen.js';
 
-Usuario.hasMany(Valoracion, {
-    foreignKey: 'usuario_id'
-});
+Usuario.hasMany(Valoracion, {foreignKey: 'usuario_id'});
 
-Valoracion.belongsTo(Usuario, {
-    foreignKey: 'usuario_id'
-});
+Valoracion.belongsTo(Usuario, {foreignKey: 'usuario_id'});
 
-Imagen.hasMany(Valoracion, {
-    foreignKey: 'imagen_id',
-    as: 'valoraciones'
-});
+Imagen.hasMany(Valoracion, {foreignKey: 'imagen_id', as: 'valoraciones'});
 
-Valoracion.belongsTo(Imagen, {
-    foreignKey: 'imagen_id'
-});
+Valoracion.belongsTo(Imagen, {foreignKey: 'imagen_id'});
 
 
 

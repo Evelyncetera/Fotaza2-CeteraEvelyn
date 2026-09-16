@@ -43,7 +43,21 @@ export const mostrarHome = async (req, res) => {
             ],
             order: [['createdAt', 'DESC']]
         });
-        
+
+        for (const publicacion of publicaciones) {
+
+            for (const imagen of publicacion.imagenes || []) {
+
+                const valoraciones = imagen.valoraciones || [];
+                const cantidad = valoraciones.length;
+                const suma = valoraciones.reduce((total, valoracion) => total + valoracion.valor, 0);
+                const promedio = cantidad > 0 ? (suma / cantidad).toFixed(1): null;
+
+                imagen.setDataValue('cantidadValoraciones',cantidad);
+                imagen.setDataValue('promedioValoraciones',promedio);
+            }
+        }
+
         let seguidos = [];
 
         if (usuarioId) {
