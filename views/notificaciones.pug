@@ -1,0 +1,70 @@
+extends layout
+
+block content
+
+    .d-flex.justify-content-between.align-items-center.mb-4
+
+        h1.mb-0
+            | Notificaciones
+
+        if notificaciones.length > 0
+
+            form(
+                action="/notificaciones/leer-todas"
+                method="POST"
+            )
+
+                button.btn.btn-outline-secondary.btn-sm(
+                    type="submit"
+                )
+                    | Marcar todas como leídas
+
+
+    if notificaciones.length === 0
+
+        .alert.alert-light.border
+            | Todavía no tenés notificaciones.
+
+    else
+
+        .list-group
+
+            each notificacion in notificaciones
+
+                a.list-group-item.list-group-item-action(
+                    href=`/notificaciones/${notificacion.id}/abrir`
+                    class=!notificacion.leida ? 'fw-semibold' : ''
+                )
+
+                    .d-flex.justify-content-between.gap-3
+
+                        div
+
+                            if notificacion.tipo === 'comentario'
+                                | #{notificacion.actor.nombre} #{notificacion.actor.apellido} comentó una de tus imágenes.
+
+                            else if notificacion.tipo === 'valoracion'
+                                | #{notificacion.actor.nombre} #{notificacion.actor.apellido} valoró una de tus imágenes.
+
+                            else if notificacion.tipo === 'interes'
+                                | #{notificacion.actor.nombre} #{notificacion.actor.apellido} marcó "Me interesa" en una de tus imágenes.
+
+                            else if notificacion.tipo === 'seguimiento'
+                                | #{notificacion.actor.nombre} #{notificacion.actor.apellido} comenzó a seguirte.
+
+
+                            if notificacion.publicacion
+
+                                small.d-block.text-muted.mt-1
+                                    | #{notificacion.publicacion.titulo}
+
+
+                        div.text-end
+
+                            if !notificacion.leida
+
+                                span.badge.bg-primary.mb-1
+                                    | Nueva
+
+                            small.d-block.text-muted
+                                = new Date(notificacion.createdAt).toLocaleString('es-AR')

@@ -1,8 +1,94 @@
 import Publicacion from '../models/Publicacion.js';
 import Imagen from '../models/Imagen.js';
-import cloudinary from '../middlewares/cloudinary.js';
+import Valoracion from '../models/Valoracion.js';
+import Interes from '../models/Interes.js';
+import Comentario from '../models/Comentario.js';
 import Tag from '../models/Tag.js';
+import Usuario from '../models/Usuario.js';
+import cloudinary from '../middlewares/cloudinary.js';
 import '../models/PublicacionTag.js';
+
+
+
+export const mostrarPublicacion = async (req, res, next) => {
+    try {
+        const usuarioId = req.session.usuarioId;
+        const publicacion = await Publicacion.findByPk(
+                req.params.id,
+                {
+                    include: [
+                        Usuario,
+                        {
+                            model: Tag,
+                            as: 'tags',
+                            through: {
+                                attributes: []
+                            }
+                        },
+                        {
+                            model: Imagen,
+                            as: 'imagenes',
+                            include: [
+                                {
+                                    model: Valoracion,
+                                    as: 'valoraciones'
+                                },
+                                {
+                                    model: Interes,
+                                    as: 'intereses'
+                                },
+                                {
+                                    model: Comentario,
+                                    as: 'comentarios',
+                                    include: [
+                                        Usuario
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            );
+        if (!publicacion) {
+            req.session.mensaje ='La publicación no existe.';
+            req.session.tipoMensaje ='warning';
+
+            return res.redirect('/');
+        }
+
+        for (const imagen of publicacion.imagenes || []) {
+
+            const valoraciones = imagen.valoraciones || [];
+            const cantidad = valoraciones.length;
+            const suma = valoraciones.reduce(
+                    (total, valoracion) =>
+                        total + valoracion.valor,
+                    0
+                );
+
+            const promedio = cantidad > 0 ? (suma / cantidad).toFixed(1) : null;
+
+            imagen.setDataValue('cantidadValoraciones', cantidad);
+            imagen.setDataValue('promedioValoraciones', promedio);
+        }
+        return res.render(
+            'home',
+            {
+                publicaciones: [
+                    publicacion
+                ],
+                seguidos: [],
+                fotosmostradas: [],
+                filtros: {},
+                tituloFeed:'Publicación',
+                mostrarBusqueda: false,
+                vistaDetalle: true
+            }
+        );
+    } catch (error) {
+        next(error);
+    }
+};
 
 export const mostrarFormulario = (req, res) => {
     res.render('publicacion');

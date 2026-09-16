@@ -8,6 +8,7 @@ import Follower from '../models/Follower.js';
 import cloudinary from '../middlewares/cloudinary.js';
 import Tag from '../models/Tag.js';
 import '../models/PublicacionTag.js';
+import '../models/Notificacion.js';
 
 export const ejecutarSeed = async (queryInterface = null) => {
     const salt = await bcrypt.genSalt(10);

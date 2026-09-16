@@ -8,6 +8,7 @@ import Valoracion from '../models/Valoracion.js';
 import Interes from '../models/Interes.js';
 import Comentario from '../models/Comentario.js';
 import Tag from '../models/Tag.js';
+import Notificacion from '../models/Notificacion.js';
 
 import '../models/PublicacionTag.js';
 
@@ -44,7 +45,11 @@ export const seguirUsuario = async (req, res) => {
             seguidor_id,
             seguido_id
         });
-
+        await Notificacion.create({
+            usuario_id: seguido_id,
+            actor_id: seguidor_id,
+            tipo: 'seguimiento'
+        });
         res.redirect('/');
 
     } catch (error) {

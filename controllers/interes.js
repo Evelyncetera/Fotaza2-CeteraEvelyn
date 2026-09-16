@@ -2,8 +2,9 @@ import Interes from '../models/Interes.js';
 import Imagen from '../models/Imagen.js';
 import Publicacion from '../models/Publicacion.js';
 import Usuario from '../models/Usuario.js';
+import Notificacion from '../models/Notificacion.js';
 
-export const marcarInteres = async (req, res) => {
+export const marcarInteres = async (req, res, next) => {
 
     try {
         const usuarioId = req.session.usuarioId;
@@ -29,12 +30,22 @@ export const marcarInteres = async (req, res) => {
             return res.redirect('/');
         }
 
-        const interesExistente = await Interes.findOne({
-            where: {
-                usuario_id: req.session.usuarioId,
-                imagen_id
-            }
-        });
+        if (Number(imagen.publicacion.usuario_id) === Number(usuarioId)) {
+
+            req.session.mensaje = 'No podés marcar interés en tu propia imagen.';
+            req.session.tipoMensaje = 'warning';
+
+            return res.redirect('/');
+        }
+
+
+        const interesExistente =
+            await Interes.findOne({
+                where: {
+                    usuario_id: usuarioId,
+                    imagen_id
+                }
+            });
 
         if (interesExistente) {
 
@@ -46,7 +57,13 @@ export const marcarInteres = async (req, res) => {
                 usuario_id: usuarioId,
                 imagen_id
             });
-
+            await Notificacion.create({
+                usuario_id: imagen.publicacion.usuario_id,
+                actor_id: usuarioId,
+                tipo:'interes',
+                publicacion_id: imagen.publicacion.id,
+                imagen_id:imagen.id
+            });
             req.session.mensaje ='Marcaste interés en esta imagen.';
         }
         req.session.tipoMensaje = 'success';

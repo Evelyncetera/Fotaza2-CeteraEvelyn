@@ -131,7 +131,10 @@ block content
 
     .feed-grid
         each publicacion in publicaciones
-            .card.shadow-sm.mb-4
+            .card.shadow-sm.mb-4(
+                id=`publicacion-${publicacion.id}`
+            )
+
                 .card-header.d-flex.justify-content-between.align-items-center
                     .d-flex.align-items-center.gap-2
                         strong= publicacion.User.nombre

@@ -1,5 +1,7 @@
 import Comentario from '../models/Comentario.js';
 import Imagen from "../models/Imagen.js";
+import Publicacion from '../models/Publicacion.js';
+import Notificacion from '../models/Notificacion.js';
 
 export const crearComentario = async (req, res) => {
 
@@ -9,7 +11,17 @@ export const crearComentario = async (req, res) => {
         }
         const { texto, imagen_id } = req.body;
 
-        const imagen = await Imagen.findByPk(imagen_id);
+        const imagen = await Imagen.findByPk(
+                    imagen_id,
+                    {
+                        include: [
+                            {
+                                model: Publicacion,
+                                as: 'publicacion'
+                            }
+                        ]
+                    }
+                );
 
             if (!imagen) {
                 req.session.mensaje ='La imagen no existe.';
@@ -31,6 +43,29 @@ export const crearComentario = async (req, res) => {
             usuario_id: req.session.usuarioId,
             imagen_id
         });
+        if (
+            Number(imagen.publicacion.usuario_id) !==
+            Number(req.session.usuarioId)
+        ) {
+
+            await Notificacion.create({
+
+                usuario_id:
+                    imagen.publicacion.usuario_id,
+
+                actor_id:
+                    req.session.usuarioId,
+
+                tipo:
+                    'comentario',
+
+                publicacion_id:
+                    imagen.publicacion.id,
+
+                imagen_id:
+                    imagen.id
+            });
+        }
         res.redirect('/');
 
     } catch (error) {

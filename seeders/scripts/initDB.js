@@ -5,6 +5,7 @@ import  "../../models/PublicacionTag.js";
 import '../../models/DenunciaImagen.js';
 import '../../models/DenunciaComentarios.js';
 import '../../models/Mensaje.js';
+import '../../models/Notificacion.js';
 import { ejecutarSeed } from "../seeds.js"
 
 async function init() {

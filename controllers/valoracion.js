@@ -1,6 +1,7 @@
 import Valoracion from '../models/Valoracion.js';
 import Imagen from '../models/Imagen.js';
 import Publicacion from '../models/Publicacion.js';
+import Notificacion from '../models/Notificacion.js';
 
 export const crearValoracion = async (req, res) => {
 
@@ -62,7 +63,14 @@ export const crearValoracion = async (req, res) => {
             imagen_id,
             valor: valorNumerico
         });
-
+        await Notificacion.create({
+            usuario_id: imagen.publicacion.usuario_id,
+            actor_id: req.session.usuarioId,
+            tipo:'valoracion',
+            publicacion_id: imagen.publicacion.id,
+            imagen_id: imagen.id
+        });
+        
         req.session.mensaje =  'Valoración registrada correctamente.';
         req.session.tipoMensaje = 'success';
 
