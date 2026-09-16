@@ -39,7 +39,19 @@ block content
                                 name="descripcion"
                                 rows="4"
                             )
+                        .mb-3
+                            label.form-label Etiquetas
 
+                            input.form-control(
+                                type="text"
+                                name="tags"
+                                placeholder="Ej: paisaje, naturaleza, san luis"
+                                required
+                            )
+
+                            .form-text
+                                | Separá las etiquetas con comas. La publicación debe tener al menos una.
+                                
                         .mb-3
                             label.form-label Agregar imágenes
 

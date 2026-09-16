@@ -1,6 +1,8 @@
 import Publicacion from '../models/Publicacion.js';
 import Imagen from '../models/Imagen.js';
-import cloudinary from '../middlewares/cloudinary.js'
+import cloudinary from '../middlewares/cloudinary.js';
+import Tag from '../models/Tag.js';
+import '../models/PublicacionTag.js';
 
 export const mostrarFormulario = (req, res) => {
     res.render('publicacion');
@@ -16,7 +18,17 @@ export const crearPublicacion = async (req, res) => {
         const {
             titulo,
             descripcion,
+            tags
         } = req.body;
+
+        const nombresTags = (tags || '')
+            .split(',')
+            .map(tag => tag.trim().toLowerCase())
+            .filter(tag => tag.length > 0);
+
+        const tagsUnicos = [
+            ...new Set(nombresTags)
+        ];
 
         if (!req.files || req.files.length === 0) {
 
@@ -60,6 +72,22 @@ export const crearPublicacion = async (req, res) => {
             return res.redirect('/publicaciones/crear');
         }
 
+        if (tagsUnicos.length === 0) {
+
+            req.session.mensaje = 'La publicación debe contener al menos una etiqueta.';
+            req.session.tipoMensaje ='warning';
+
+            return res.redirect('/publicaciones/crear');
+        }
+
+        const tagDemasiadoLargo = tagsUnicos.some(tag => tag.length > 50);
+
+        if (tagDemasiadoLargo) {
+            req.session.mensaje ='Las etiquetas no pueden superar los 50 caracteres.';
+            req.session.tipoMensaje ='warning';
+
+            return res.redirect('/publicaciones/crear');
+        }
 
         const nuevaPublicacion = await Publicacion.create({
                 usuario_id: req.session.usuarioId,
@@ -68,7 +96,20 @@ export const crearPublicacion = async (req, res) => {
                 comentarios_abiertos : true
             });
 
+        const tagAsociados =[];
+        for(const nombre of tagsUnicos){
+            const[tag] = await Tag.findOrCreate({
+                where: {
+                    nombre
+                },
+                defaults: {
+                    nombre
+                }
+            });
+            tagAsociados.push(tag);
+            }
         
+        await nuevaPublicacion.setTags(tagAsociados);
 
         for (let indice = 0; indice < req.files.length; indice++) {
 

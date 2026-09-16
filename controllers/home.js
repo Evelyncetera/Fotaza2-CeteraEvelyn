@@ -5,6 +5,8 @@ import Comentario from "../models/Comentario.js";
 import Valoracion from "../models/Valoracion.js";
 import Interes from '../models/Interes.js';
 import Follower from '../models/Follower.js';
+import Tag from '../models/Tag.js';
+import '../models/PublicacionTag.js';
 
 export const mostrarHome = async (req, res) => {
     try {
@@ -14,6 +16,13 @@ export const mostrarHome = async (req, res) => {
 
             include: [
                 Usuario,
+                {
+                    model: Tag,
+                    as: 'tags',
+                    through: {
+                        attributes: []
+                    }
+                },
                 {
                     model: Imagen,
                     as: 'imagenes',

@@ -122,7 +122,16 @@ block content
                         p.card-text= publicacion.descripcion
                         
                     .d-flex.gap-2.align-items-center.mt-3.flex-wrap
+                    
+                    if publicacion.tags && publicacion.tags.length > 0
 
+                        .d-flex.gap-1.flex-wrap.mb-2
+
+                            each tag in publicacion.tags
+
+                                span.badge.bg-secondary
+                                    | ##{tag.nombre}
+                                    
                 // RECORREMOS TODAS LAS IMÁGENES
                 if publicacion.imagenes && publicacion.imagenes.length > 0
 
