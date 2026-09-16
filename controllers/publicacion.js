@@ -5,6 +5,7 @@ import Interes from '../models/Interes.js';
 import Comentario from '../models/Comentario.js';
 import Tag from '../models/Tag.js';
 import Usuario from '../models/Usuario.js';
+import Coleccion from '../models/Coleccion.js';
 import cloudinary from '../middlewares/cloudinary.js';
 import '../models/PublicacionTag.js';
 
@@ -61,16 +62,21 @@ export const mostrarPublicacion = async (req, res, next) => {
             const valoraciones = imagen.valoraciones || [];
             const cantidad = valoraciones.length;
             const suma = valoraciones.reduce(
-                    (total, valoracion) =>
-                        total + valoracion.valor,
-                    0
-                );
+                    (total, valoracion) => total + valoracion.valor, 0);
 
             const promedio = cantidad > 0 ? (suma / cantidad).toFixed(1) : null;
 
             imagen.setDataValue('cantidadValoraciones', cantidad);
             imagen.setDataValue('promedioValoraciones', promedio);
         }
+        const coleccionesUsuario = await Coleccion.findAll({
+            where: {
+                usuario_id: usuarioId
+            },
+            order: [
+                ['nombre', 'ASC']
+            ]
+        });
         return res.render(
             'home',
             {
@@ -82,7 +88,8 @@ export const mostrarPublicacion = async (req, res, next) => {
                 filtros: {},
                 tituloFeed:'Publicación',
                 mostrarBusqueda: false,
-                vistaDetalle: true
+                vistaDetalle: true,
+                coleccionesUsuario
             }
         );
     } catch (error) {
@@ -118,9 +125,7 @@ export const crearPublicacion = async (req, res) => {
 
         if (!req.files || req.files.length === 0) {
 
-            req.session.mensaje =
-                'La publicación debe contener al menos una imagen.';
-
+            req.session.mensaje = 'La publicación debe contener al menos una imagen.';
             req.session.tipoMensaje = 'warning';
 
             return res.redirect('/publicaciones/crear');

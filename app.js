@@ -10,6 +10,8 @@ import './models/PublicacionTag.js';
 import "./models/DenunciaImagen.js";
 import "./models/DenunciaComentarios.js";
 import './models/Notificacion.js';
+import './models/Coleccion.js';
+import './models/ColeccionPublicacion.js';
 import express from 'express';
 import session from 'express-session';
 import sequelize, { conexionDB } from './models/config.js';
@@ -28,6 +30,7 @@ import moderacionRoutes from './routes/moderacionRoutes.js';
 import imagenRoutes from './routes/imagenRoutes.js';
 import mensajeRoutes from './routes/mensajeRoutes.js';
 import notificacionRoutes from './routes/notificacionRoutes.js';
+import coleccionRoutes from './routes/coleccionRoutes.js';
 import { upload } from './middlewares/multerCloudinary.js';
 import './middlewares/cloudinary.js';
 import { usuarioMiddleware } from './middlewares/authMiddle.js';
@@ -72,6 +75,7 @@ app.use('/moderacion', moderacionRoutes);
 app.use('/imagenes',imagenRoutes);
 app.use('/mensajes', mensajeRoutes);
 app.use('/notificaciones', notificacionRoutes);
+app.use('/colecciones', coleccionRoutes);
 
 //404
 app.use((req, res) => {

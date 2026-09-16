@@ -6,11 +6,24 @@ import Valoracion from "../models/Valoracion.js";
 import Interes from '../models/Interes.js';
 import Follower from '../models/Follower.js';
 import Tag from '../models/Tag.js';
+import Coleccion from '../models/Coleccion.js';
 import '../models/PublicacionTag.js';
 
 export const mostrarHome = async (req, res) => {
     try {
         const usuarioId = req.session?.usuarioId || null;
+
+        let coleccionesUsuario = [];
+        if (usuarioId) {
+            coleccionesUsuario = await Coleccion.findAll({
+                where: {
+                    usuario_id: usuarioId
+                },
+                order: [
+                    ['nombre', 'ASC']
+                ]
+            });
+        }
 
         const publicaciones = await Publicacion.findAll({
 
@@ -94,7 +107,8 @@ export const mostrarHome = async (req, res) => {
             fotosmostradas: [],
             filtros: {},
             tituloFeed: 'Feed',
-            mostrarBusqueda: true
+            mostrarBusqueda: true,
+            coleccionesUsuario
         });
     } catch (error) {
         console.error(error);

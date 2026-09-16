@@ -1,0 +1,105 @@
+extends layout
+
+block content
+
+    if mensaje
+        .alert(
+            class=`alert-${tipoMensaje}`
+            role="alert"
+        )
+            = mensaje
+
+
+    .d-flex.justify-content-between.align-items-center.mb-4
+
+        h1.mb-0
+            | Mis colecciones
+
+
+    .card.shadow-sm.mb-4
+
+        .card-body
+
+            h5.card-title
+                | Crear nueva colección
+
+            form(
+                action="/colecciones/crear"
+                method="POST"
+            )
+
+                .row.g-2
+
+                    .col-md-9
+
+                        input.form-control(
+                            type="text"
+                            name="nombre"
+                            placeholder="Nombre de la colección"
+                            maxlength="100"
+                            required
+                        )
+
+                    .col-md-3.d-grid
+
+                        button.btn.btn-primary(
+                            type="submit"
+                        )
+                            i.bi.bi-plus-lg
+                            |  Crear colección
+
+
+    if colecciones.length === 0
+
+        .alert.alert-light.border
+            | Todavía no tenés colecciones.
+
+    else
+
+        .row.g-3
+
+            each coleccion in colecciones
+
+                .col-md-6.col-lg-4
+
+                    .card.shadow-sm.h-100
+
+                        if coleccion.nombre === 'Favoritos'
+
+                            .card-header
+                                i.bi.bi-heart-fill
+                                |  Favoritos
+
+                        else
+
+                            .card-header
+                                i.bi.bi-folder
+                                |  #{coleccion.nombre}
+
+
+                        .card-body
+
+                            - const cantidad = coleccion.publicaciones ? coleccion.publicaciones.length : 0
+
+                            p.text-muted
+                                | #{cantidad} publicación#{cantidad === 1 ? '' : 'es'}
+
+
+                            if coleccion.publicaciones && coleccion.publicaciones.length > 0
+
+                                - const primeraPublicacion = coleccion.publicaciones[0]
+
+                                if primeraPublicacion.imagenes && primeraPublicacion.imagenes.length > 0
+
+                                    img.img-fluid.rounded.mb-3(
+                                        src=primeraPublicacion.imagenes[0].archivo
+                                        alt="Vista previa de la colección"
+                                        style="height: 180px; width: 100%; object-fit: cover;"
+                                    )
+
+
+                            a.btn.btn-outline-primary(
+                                href=`/colecciones/${coleccion.id}`
+                            )
+                                i.bi.bi-folder2-open
+                                |  Ver colección

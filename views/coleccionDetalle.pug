@@ -1,0 +1,106 @@
+extends layout
+
+block content
+
+    if mensaje
+        .alert(
+            class=`alert-${tipoMensaje}`
+            role="alert"
+        )
+            = mensaje
+
+
+    .d-flex.justify-content-between.align-items-center.mb-4
+
+        div
+            h1.mb-1
+                if coleccion.nombre === 'Favoritos'
+                    i.bi.bi-heart-fill.me-2
+                else
+                    i.bi.bi-folder.me-2
+
+                = coleccion.nombre
+
+            p.text-muted.mb-0
+                | #{coleccion.publicaciones.length} publicación#{coleccion.publicaciones.length === 1 ? '' : 'es'}
+
+        a.btn.btn-outline-secondary(
+            href="/colecciones"
+        )
+            i.bi.bi-arrow-left
+            |  Volver
+
+
+    if coleccion.publicaciones.length === 0
+
+        .alert.alert-light.border
+            | Esta colección todavía no tiene publicaciones.
+
+    else
+
+        .row.g-4
+
+            each publicacion in coleccion.publicaciones
+
+                .col-md-6.col-lg-4
+
+                    .card.shadow-sm.h-100
+
+                        if publicacion.imagenes && publicacion.imagenes.length > 0
+
+                            img.card-img-top(
+                                src=publicacion.imagenes[0].archivo
+                                alt=publicacion.titulo
+                                style="height: 220px; object-fit: cover;"
+                            )
+
+
+                        .card-body.d-flex.flex-column
+
+                            h5.card-title
+                                = publicacion.titulo
+
+
+                            if publicacion.User
+
+                                p.text-muted.small.mb-2
+                                    | Por #{publicacion.User.nombre} #{publicacion.User.apellido}
+
+
+                            if publicacion.descripcion
+
+                                p.card-text
+                                    = publicacion.descripcion
+
+
+                            .mt-auto.d-flex.gap-2.flex-wrap
+
+                                a.btn.btn-outline-primary.btn-sm(
+                                    href=`/publicaciones/ver/${publicacion.id}`
+                                )
+                                    i.bi.bi-eye
+                                    |  Ver publicación
+
+
+                                form(
+                                    action="/colecciones/quitar-publicacion"
+                                    method="POST"
+                                )
+
+                                    input(
+                                        type="hidden"
+                                        name="coleccion_id"
+                                        value=coleccion.id
+                                    )
+
+                                    input(
+                                        type="hidden"
+                                        name="publicacion_id"
+                                        value=publicacion.id
+                                    )
+
+                                    button.btn.btn-outline-danger.btn-sm(
+                                        type="submit"
+                                    )
+                                        i.bi.bi-trash
+                                        |  Quitar

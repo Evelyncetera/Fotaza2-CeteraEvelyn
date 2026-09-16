@@ -11,7 +11,7 @@ block content
 
     if mostrarBusqueda !== false
 
-    .card.mb-4
+        .card.mb-4
         .card-body
 
             h5 Buscar publicaciones
@@ -120,7 +120,6 @@ block content
     .d-flex.justify-content-between.align-items-center.my-4
         h1.mb-0
             = tituloFeed || 'Feed'
-
         if usuarioLogueado
             a.btn.btn-success(
                 href="/publicaciones/crear"
@@ -128,27 +127,20 @@ block content
                 i.bi.bi-plus-lg
                 |  Nueva publicación
 
-
     .feed-grid
         each publicacion in publicaciones
             .card.shadow-sm.mb-4(
                 id=`publicacion-${publicacion.id}`
             )
-
                 .card-header.d-flex.justify-content-between.align-items-center
                     .d-flex.align-items-center.gap-2
                         strong= publicacion.User.nombre
-
                         if seguidos && seguidos.includes(publicacion.User.id)
                             span.badge.bg-success
                                 | Siguiendo
-
                     .d-flex.align-items-center.gap-2
-
                         if usuarioLogueado && usuarioLogueado != publicacion.User.id
-
                             if seguidos.includes(publicacion.User.id)
-
                                 form(
                                     action="/follower/dejar-seguir"
                                     method="POST"
@@ -159,14 +151,11 @@ block content
                                         name="seguido_id"
                                         value=publicacion.User.id
                                     )
-
                                     button.btn.btn-outline-danger.btn-sm(
                                         type="submit"
                                     )
                                         | Dejar de seguir
-
                             else
-
                                 form(
                                     action="/follower/seguir"
                                     method="POST"
@@ -198,83 +187,107 @@ block content
                 // DATOS GENERALES
                 .card-body
                     h5.card-title= publicacion.titulo
-
                     if publicacion.descripcion
                         p.card-text= publicacion.descripcion
                         
                     .d-flex.gap-2.align-items-center.mt-3.flex-wrap
                     
                     if publicacion.tags && publicacion.tags.length > 0
-
                         .d-flex.gap-1.flex-wrap.mb-2
-
                             each tag in publicacion.tags
-
                                 span.badge.bg-secondary
                                     | ##{tag.nombre}
                                     
+                    if usuarioLogueado
+                        .d-flex.gap-2.flex-wrap.mt-3
+                            form(
+                                action="/colecciones/favoritos/toggle"
+                                method="POST"
+                            )
+                                input(
+                                    type="hidden"
+                                    name="publicacion_id"
+                                    value=publicacion.id
+                                )
+                                button.btn.btn-outline-danger.btn-sm(
+                                    type="submit"
+                                )
+                                    i.bi.bi-heart
+                                    |  Favoritos
+                            - const coleccionesPersonalizadas = coleccionesUsuario ? coleccionesUsuario.filter(c => c.nombre !== 'Favoritos') : []
+                            if coleccionesPersonalizadas.length > 0
+                                form.d-flex.gap-1(
+                                    action="/colecciones/agregar-publicacion"
+                                    method="POST"
+                                )
+                                    input(
+                                        type="hidden"
+                                        name="publicacion_id"
+                                        value=publicacion.id
+                                    )
+                                    select.form-select.form-select-sm(
+                                        name="coleccion_id"
+                                        required
+                                    )
+                                        option(
+                                            value=""
+                                            selected
+                                            disabled
+                                        )
+                                            | Guardar en...
+                                        each coleccion in coleccionesPersonalizadas
+                                            option(
+                                                value=coleccion.id
+                                            )
+                                                = coleccion.nombre
+                                    button.btn.btn-outline-primary.btn-sm(
+                                        type="submit"
+                                    )
+                                        i.bi.bi-bookmark-plus
+
                 // RECORREMOS TODAS LAS IMÁGENES
                 if publicacion.imagenes && publicacion.imagenes.length > 0
-
                     .carousel.slide(
                         id=`carouselPublicacion-${publicacion.id}`
                         data-bs-interval="false"
                     )
-
                         .carousel-inner
-
                             each imagen, indice in publicacion.imagenes
-
                                 .carousel-item(
                                     class=indice === 0 ? 'active' : ''
                                 )
-
                                     img.d-block.w-100(
                                         src=imagen.archivo
                                         alt=`Imagen ${indice + 1} de ${publicacion.titulo}`
                                         style="height: 450px; object-fit: contain; background: #111;"
                                     )
-
                                     .p-3
-
                                         // INFO DE LA IMAGEN
                                         .d-flex.gap-2.mb-3
-
                                             span.badge.bg-secondary
                                                 | Imagen #{indice + 1} de #{publicacion.imagenes.length}
-
                                             if imagen.licencia === 'copyright'
                                                 span.badge.bg-warning.text-dark
                                                     | Copyright
                                             else
                                                 span.badge.bg-success
                                                     | Sin copyright
-
                                         // PROMEDIO Y CANTIDAD DE VALORACIONES
                                         .d-flex.align-items-center.gap-2.mb-3
-
                                             if imagen.cantidadValoraciones > 0
-
                                                 span.fw-semibold
                                                     i.bi.bi-star-fill.text-warning
                                                     |  #{imagen.promedioValoraciones}
-
                                                 span.text-muted.small
                                                     | #{imagen.cantidadValoraciones} valoraciones
-
                                             else
-
                                                 span.text-muted.small
                                                     | Sin valoraciones
-
                                         // ACCIONES DE ESTA IMAGEN
                                         if usuarioLogueado
-
                                             .d-flex.gap-2.align-items-center.flex-wrap.mb-3
-
                                                 // ME INTERESA
                                                 if usuarioLogueado != publicacion.User.id
-
                                                     form(
                                                         action="/interes/toggle"
                                                         method="POST"
@@ -284,38 +297,29 @@ block content
                                                             name="imagen_id"
                                                             value=imagen.id
                                                         )
-
                                                         button.btn.btn-outline-danger.btn-sm(
                                                             type="submit"
                                                         )
                                                             i.bi.bi-heart-fill
                                                             |  #{imagen.intereses ? imagen.intereses.length : 0}
 
-
                                                 // VALORACIÓN
                                                 if usuarioLogueado != publicacion.User.id
-
                                                     - const yaValoro = imagen.valoraciones && imagen.valoraciones.some(v => v.usuario_id == usuarioLogueado)
-
                                                     if yaValoro
-
                                                         span.badge.bg-light.text-dark.border
                                                             i.bi.bi-check-circle
                                                             |  Ya valoraste esta imagen
-
                                                     else
-
                                                         form.d-flex.gap-1(
                                                             action="/valoraciones/crear"
                                                             method="POST"
                                                         )
-
                                                             input(
                                                                 type="hidden"
                                                                 name="imagen_id"
                                                                 value=imagen.id
                                                             )
-
                                                             select.form-select.form-select-sm(
                                                                 name="valor"
                                                                 required
@@ -323,21 +327,17 @@ block content
                                                             )
                                                                 each val in [1,2,3,4,5]
                                                                     option(value=val)= val
-
                                                             button.btn.btn-outline-warning.btn-sm(
                                                                 type="submit"
                                                             )
                                                                 | Valorar
 
-
                                                 // DENUNCIA DE ESTA IMAGEN
                                                 if usuarioLogueado != publicacion.User.id
-
                                                     form.d-flex.gap-1.flex-wrap(
                                                         action=`/denuncias/imagen/${imagen.id}`
                                                         method="POST"
                                                     )
-
                                                         select.form-select.form-select-sm(
                                                             name="motivo"
                                                             required
@@ -348,7 +348,6 @@ block content
                                                             option(value="violencia") Violencia
                                                             option(value="spam") Spam
                                                             option(value="otro") Otro
-
                                                         input.form-control.form-control-sm(
                                                             type="text"
                                                             name="descripcion"
@@ -356,22 +355,17 @@ block content
                                                             required
                                                             style="width: 180px;"
                                                         )
-
                                                         button.btn.btn-outline-secondary.btn-sm(
                                                             type="submit"
                                                         )
                                                             i.bi.bi-flag
                                                             |  Denunciar
 
-
                                         // COMENTARIOS DE ESTA IMAGEN
                                         .d-flex.justify-content-between.align-items-center.mt-3.border-top.pt-3.mb-2
-
                                             h6.mb-0
                                                 | Comentarios
-
                                             if usuarioLogueado && usuarioLogueado == publicacion.User.id
-
                                                 form(
                                                     action=`/imagenes/${imagen.id}/comentarios/toggle`
                                                     method="POST"
@@ -383,27 +377,21 @@ block content
                                                             i.bi.bi-lock
                                                             |  Cerrar comentarios
                                                     else
-
                                                         button.btn.btn-outline-success.btn-sm(
                                                             type="submit"
                                                         )
                                                             i.bi.bi-unlock
                                                             |  Abrir comentarios
-
                                         if imagen.comentarios && imagen.comentarios.length > 0
-
                                             .overflow-auto(
                                                 style="max-height: 180px;"
                                             )
                                                 each comentario in imagen.comentarios
-
                                                     .mb-2
                                                         p.small.mb-1
                                                             strong #{comentario.User.nombre}:
                                                             |  #{comentario.texto}
-
                                                         if usuarioLogueado && usuarioLogueado != comentario.User.id && comentario.User.id != publicacion.User.id
-
                                                             form.d-flex.gap-1.mb-2(
                                                                 action=`/denuncias/comentario/${comentario.id}`
                                                                 method="POST"
@@ -418,13 +406,11 @@ block content
                                                                     option(value="spam") Spam
                                                                     option(value="acoso") Acoso
                                                                     option(value="otro") Otro
-
                                                                 input.form-control.form-control-sm(
                                                                     type="text"
                                                                     name="descripcion"
                                                                     placeholder="Descripción"
                                                                 )
-
                                                                 button.btn.btn-outline-danger.btn-sm(
                                                                     type="submit"
                                                                 )
@@ -436,44 +422,34 @@ block content
 
                                         // NUEVO COMENTARIO
                                         if usuarioLogueado
-
                                             if imagen.comentarios_abiertos
-
                                                 form.mt-2(
                                                     action="/comentarios/crear"
                                                     method="POST"
                                                 )
-
                                                     input(
                                                         type="hidden"
                                                         name="imagen_id"
                                                         value=imagen.id
                                                     )
-
                                                     input.form-control.form-control-sm.mb-1(
                                                         type="text"
                                                         name="texto"
                                                         placeholder="Comentar..."
                                                         required
                                                     )
-
                                                     button.btn.btn-sm.btn-outline-primary(
                                                         type="submit"
                                                     )
                                                         | Comentar
-
                                             else
-
                                                 p.small.text-muted.mt-2
                                                     i.bi.bi-lock
                                                     |  Los comentarios están cerrados para esta imagen.
 
-
                         // FLECHAS SOLO SI HAY MÁS DE UNA IMAGEN
                         if publicacion.imagenes.length > 1
-
                             .d-flex.justify-content-between.align-items-center.px-3.pb-3
-
                                 button.btn.btn-outline-secondary.btn-sm(
                                     type="button"
                                     data-bs-target=`#carouselPublicacion-${publicacion.id}`
@@ -482,7 +458,6 @@ block content
                                 )
                                     i.bi.bi-chevron-left
                                     |  Anterior
-
                                 button.btn.btn-outline-secondary.btn-sm(
                                     type="button"
                                     data-bs-target=`#carouselPublicacion-${publicacion.id}`
@@ -491,9 +466,7 @@ block content
                                 )
                                     | Siguiente 
                                     i.bi.bi-chevron-right
-
                 else
-
                     .card-body
                         p.text-muted
                             | Esta publicación no tiene imágenes disponibles.

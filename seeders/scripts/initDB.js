@@ -6,6 +6,8 @@ import '../../models/DenunciaImagen.js';
 import '../../models/DenunciaComentarios.js';
 import '../../models/Mensaje.js';
 import '../../models/Notificacion.js';
+import '../../models/Coleccion.js';
+import '../../models/ColeccionPublicacion.js';
 import { ejecutarSeed } from "../seeds.js"
 
 async function init() {
