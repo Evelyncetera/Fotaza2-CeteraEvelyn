@@ -7,8 +7,8 @@ const router = Router();
 router.get('/comentarios', esUsuarioAutenticado, listarDenunciasComentarios);
 
 
-router.post('/imagen/:id', denunciarImagen);
-router.post('/comentario/:id', denunciarComentario);
-router.post('comentarios/eliminar/:id', esUsuarioAutenticado, eliminarComentarioDenunciado);
+router.post('/imagen/:id', esUsuarioAutenticado, denunciarImagen);
+router.post('/comentario/:id', esUsuarioAutenticado, denunciarComentario);
+router.post('/comentarios/eliminar/:id', esUsuarioAutenticado, eliminarComentarioDenunciado);
 
 export default router;

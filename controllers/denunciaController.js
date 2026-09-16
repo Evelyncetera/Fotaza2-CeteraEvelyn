@@ -62,17 +62,10 @@ export const denunciarImagen = async (req, res) => {
     }
 };
 
-export const denunciarComentario = async (req, res) => {
+export const denunciarComentario = async (req, res, next) => {
 
     try {
-        if (!req.session.usuarioId) {
-            
-            req.session.mensaje = 'Debes iniciar sesión para denunciar contenido';
-            req.session.tipoMensaje = 'warning';
-
-            return res.redirect('/auth/login');
-        }
-
+        const usuarioId = req.session.usuarioId;
         const { id } = req.params;
         const { motivo, descripcion } = req.body;
 
@@ -83,11 +76,49 @@ export const denunciarComentario = async (req, res) => {
             return res.redirect('/');
         }
 
+        const comentario = await Comentario.findByPk(
+            id,
+            {
+                include: [
+                    {
+                        model: Imagen,
+                        include: [
+                            {
+                                model: Publicacion,
+                                as: 'publicacion'
+                            }
+                        ]
+                    }
+                ]
+            }
+        );
+
+        if (!comentario) {
+            req.session.mensaje ='El comentario no existe.';
+            req.session.tipoMensaje ='warning';
+            return res.redirect('/');
+        }
+
+        // No puede denunciar su propio comentario
+        if (Number(comentario.usuario_id) === Number(usuarioId)) {
+            req.session.mensaje ='No podés denunciar tu propio comentario.';
+            req.session.tipoMensaje ='warning';
+            return res.redirect('/');
+        }
+
+        // No se puede denunciar comentarios del autor de la publi
+        if (Number(comentario.usuario_id) === Number(comentario.Imagen.publicacion.usuario_id)) {
+            req.session.mensaje ='Este comentario no puede denunciarse.';
+            req.session.tipoMensaje ='warning';
+
+            return res.redirect('/');
+        }
+
         await DenunciaComentario.create({
             motivo,
             descripcion: descripcion || null,
             usuario_id: req.session.usuarioId,
-            comentario_id: id,
+            comentario_id: comentario.id,
         });
 
         req.session.mensaje = 'Denuncia de comentario registrada correctamente.';
@@ -104,13 +135,7 @@ export const denunciarComentario = async (req, res) => {
 
             return res.redirect("/");
         }
-
-        console.error(error);
-        
-        req.session.mensaje = 'No se pudo registrar la denuncia';
-        req.session.tipoMensaje = 'danger';
-
-        return res.redirect('/');
+        next(error);
     }
 };
 
@@ -216,16 +241,16 @@ export const eliminarComentarioDenunciado = async (req,res) => {
             req.params.id, 
             {
                 include: [
+                    {
+                        model: Imagen,
+                        include: [
                             {
-                                model: Imagen,
-                                include: [
-                                    {
-                                        model: Publicacion,
-                                        as: 'publicacion'
-                                    }
-                                ]
+                                model: Publicacion,
+                                as: 'publicacion'
                             }
                         ]
+                    }
+                ]
             }
         );
 
@@ -234,9 +259,12 @@ export const eliminarComentarioDenunciado = async (req,res) => {
             return res.status(404).send('El comentario no existe');
         }
 
-        if (comentario.Imagen.publicacion.usuario_id !== req.session.usuarioId){
+        if (Number(comentario.Imagen.publicacion.usuario_id) !== Number(req.session.usuarioId)){
 
-            return res.status(403).send ('No tenés permisos para eliminar este comentario');
+            req.session.mensaje = 'No tenés permisos para eliminar este comentario';
+            req.session.tipoMensaje = 'danger';
+
+            return res.redirect('/denuncias/comentarios');
         }
 
         await DenunciaComentario.destroy({

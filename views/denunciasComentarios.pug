@@ -2,7 +2,7 @@ extends layout
 
 block content
 
-    h1.mb-4 Denuncia de Comentarios
+    h2.mb-4 Denuncia de comentarios
 
     if mensaje
         .alert(
@@ -11,39 +11,58 @@ block content
         )
             = mensaje
 
-    h2.mb-3 Denuncias en mis publicaciones
+    h3.mb-3 Denuncias en mis publicaciones
 
-        if denunciasRecibidas.length === 0
-            p.text-muted No hay comentarios denunciados en tus publicaciones.
-
-        else
-            each denuncia in denunciasRecibidas
-
-                .card.mb-3.shadow-sm
-                    .card-body
-
+    if denunciasRecibidas.length === 0
+        p.text-muted.small No hay comentarios denunciados en tus publicaciones.
+    else
+        each denuncia in denunciasRecibidas
+            .card.mb-3.shadow-sm
+                .card-body
+                    p
+                        strong Comentario:
+                        |  #{denuncia.Comentario.texto}
+                    p
+                        strong Motivo:
+                        |  #{denuncia.motivo}
+                    if denuncia.descripcion
                         p
-                            strong Comentario:
-                            |  #{denuncia.Comentario.texto}
-
-                        p
-                            strong Motivo:
-                            |  #{denuncia.motivo}
-
-                        if denuncia.descripcion
-                            p
-                                strong Descripción:
-                                |  #{denuncia.descripcion}
-
-                        p
-                            strong Denunciado por:
-                            |  #{denuncia.User.nombre}
-
-                        form(
-                            action=`/denuncias/comentarios/eliminar/${denuncia.Comentario.id}`
-                            method="POST"
+                            strong Descripción:
+                            |  #{denuncia.descripcion}
+                    p
+                        strong Denunciado por:
+                        |  #{denuncia.User.nombre}
+                    form(
+                        action=`/denuncias/comentarios/eliminar/${denuncia.Comentario.id}`
+                        method="POST"
+                    )
+                        button.btn.btn-danger.btn-sm(
+                            type="submit"
                         )
-                            button.btn.btn-danger.btn-sm(
-                                type="submit"
-                            )
-                                | Eliminar comentario
+                            | Eliminar comentario
+    
+    hr.my-4
+    h3.mb-3 Mis denuncias realizadas
+
+    if misDenuncias.length === 0
+        p.text-muted
+            | Todavía no realizaste denuncias de comentarios.
+    else
+        each denuncia in misDenuncias
+            .card.mb-3.shadow-sm
+                .card-body
+                    p
+                        strong Comentario denunciado:
+                        |  #{denuncia.Comentario.texto}
+                    p
+                        strong Autor del comentario:
+                        |  #{denuncia.Comentario.User.nombre} #{denuncia.Comentario.User.apellido}
+                    p
+                        strong Motivo:
+                        |  #{denuncia.motivo}
+                    if denuncia.descripcion
+                        p
+                            strong Descripción:
+                            |  #{denuncia.descripcion}
+                    small.text-muted
+                        = new Date(denuncia.createdAt).toLocaleString('es-AR')
