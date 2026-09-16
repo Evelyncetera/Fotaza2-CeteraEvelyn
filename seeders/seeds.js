@@ -4,6 +4,7 @@ import User from '../models/Usuario.js';
 import Publicacion from '../models/Publicacion.js';
 import Imagen from '../models/Imagen.js';
 import Rol from '../models/Rol.js';
+import cloudinary from '../middlewares/cloudinary.js';
 
 export const ejecutarSeed = async (queryInterface = null) => {
     const salt = await bcrypt.genSalt(10);
@@ -39,18 +40,75 @@ export const ejecutarSeed = async (queryInterface = null) => {
     ]);
     console.log("Publicaciones creadas correctamente.");
 
+    const generarMarcaAgua = (usuario) => {
+        return `© ${usuario.nombre} ${usuario.apellido}`;
+    };
+
+    const marcaAguaSeeder = generarMarcaAgua(usuarios[1]);
+
+    const imagenCopyright = cloudinary.url(
+        'fotaza2/h5fogrnyvx3ua3y4xc3h',
+        {
+            secure: true,
+            transformation: [
+                {
+                    overlay: {
+                        font_family: 'Arial',
+                        font_size: 100,
+                        font_weight: 'bold',
+                        text: marcaAguaSeeder
+                    },
+                    color: 'black',
+                    opacity: 70
+                },
+                {
+                    width: 0.25,
+                    flags: 'relative'
+                },
+                {
+                    flags: 'layer_apply',
+                    gravity: 'south_east',
+                    x: 0.022,
+                    y: 0.022
+                },
+                {
+                    overlay: {
+                        font_family: 'Arial',
+                        font_size: 100,
+                        font_weight: 'bold',
+                        text: marcaAguaSeeder
+                    },
+                    color: 'white',
+                    opacity: 95
+                },
+                {
+                    width: 0.25,
+                    flags: 'relative'
+                },
+                {
+                    flags: 'layer_apply',
+                    gravity: 'south_east',
+                    x: 0.02,
+                    y: 0.02
+                }
+            ]
+        }
+    );
+
     await Imagen.bulkCreate([
         {
             archivo: "https://res.cloudinary.com/dlvrrops9/image/upload/v1781237614/fotaza2/uujzf0fdqnfycpfslvz1.jpg",
             publicacion_id: publicaciones[0].id,
             licencia: 'sin_copyright',
-            marca_de_agua: null
+            marca_de_agua: null,
+            comentarios_abiertos: true
         },
         {
-            archivo: "https://res.cloudinary.com/dlvrrops9/image/upload/v1781279773/fotaza2/h5fogrnyvx3ua3y4xc3h.jpg",
+            archivo: imagenCopyright,
             publicacion_id: publicaciones[1].id,
             licencia: 'copyright',
-            marca_de_agua: '© UsuarioB'
+            marca_de_agua: marcaAguaSeeder,
+            comentarios_abiertos: true
         }
     ]);
     console.log("Seeders ejecutados correctamente.");

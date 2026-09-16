@@ -21,7 +21,7 @@ const Imagen = sequelize.define(
         },
 
         archivo: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: false
         },
         licencia: {
@@ -35,6 +35,11 @@ const Imagen = sequelize.define(
         marca_de_agua :{
             type: DataTypes.STRING,
             allowNull: true
+        }, 
+        comentarios_abiertos: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true
         }
     },
     {

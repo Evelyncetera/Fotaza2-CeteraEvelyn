@@ -2,6 +2,13 @@ extends layout
 
 block content
 
+    if mensaje && mensaje.trim()
+        .alert(
+            class=`alert-${tipoMensaje}`
+            role="alert"
+        )
+            = mensaje
+
     .row.justify-content-center
         .col-md-8.col-lg-6
 
@@ -18,6 +25,7 @@ block content
 
                         .mb-3
                             label.form-label Título
+
                             input.form-control(
                                 type="text"
                                 name="titulo"
@@ -26,52 +34,307 @@ block content
 
                         .mb-3
                             label.form-label Descripción
+
                             textarea.form-control(
                                 name="descripcion"
                                 rows="4"
                             )
 
                         .mb-3
-                            label.form-label Seleccionar imagen
+                            label.form-label Agregar imágenes
+
                             input.form-control(
+                                id="imagenes"
                                 type="file"
-                                name="imagen"
+                                name="imagenes"
                                 accept="image/*"
-                            )
-
-                        .mb-3
-                            label.form-label Licencia
-
-                            select.form-select(
-                                name="licencia"
+                                multiple
                                 required
-                            )
-                                option(value="sin_copyright") Sin copyright
-                                option(value="copyright") Con copyright
-
-                        .mb-3
-                            label.form-label Marca de agua
-
-                            input.form-control(
-                                type="text"
-                                name="marca_de_agua"
-                                placeholder="Ej: © Usuario Fotaza"
                             )
 
                             .form-text
-                                | Se utilizará solamente para imágenes con copyright.
+                                | Podés elegir varias imagenes.
 
-
-                        .form-check.mb-3
-                            input.form-check-input(
-                                type="checkbox"
-                                name="comentarios_abiertos"
-                                checked
-                            )
-                            label.form-check-label
-                                | Permitir comentarios
+                        #configuracionesImagenes
 
                         button.btn.btn-success.w-100(
                             type="submit"
                         )
                             | Publicar
+
+
+    script.
+        const inputImagenes =
+            document.getElementById('imagenes');
+
+        const contenedor =
+            document.getElementById(
+                'configuracionesImagenes'
+            );
+
+        let imagenesSeleccionadas = [];
+
+
+        function identificadorArchivo(archivo) {
+            return `${archivo.name}-${archivo.size}-${archivo.lastModified}`;
+        }
+
+
+        function actualizarInputFiles() {
+
+            const dataTransfer =
+                new DataTransfer();
+
+            imagenesSeleccionadas.forEach(
+                item => {
+                    dataTransfer.items.add(item.archivo);
+                }
+            );
+
+            inputImagenes.files =
+                dataTransfer.files;
+        }
+
+
+        function renderizarImagenes() {
+
+            contenedor.innerHTML = '';
+
+            imagenesSeleccionadas.forEach(
+                (item, indice) => {
+
+                    const bloque =
+                        document.createElement('div');
+
+                    bloque.className =
+                        'border rounded p-3 mb-3';
+
+                    bloque.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+
+                            <div>
+                                <strong>
+                                    Imagen ${indice + 1}
+                                </strong>
+
+                                <div class="small text-muted">
+                                    ${item.archivo.name}
+                                </div>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="btn btn-link text-danger p-0 btn-eliminar-imagen"
+                                title="Quitar imagen"
+                            >
+                                <i class="bi bi-trash"></i>
+                            </button>
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Licencia
+                            </label>
+
+                            <select
+                                class="form-select licencia-imagen"
+                                name="licencias"
+                                required
+                            >
+                                <option
+                                    value="sin_copyright"
+                                    ${
+                                        item.licencia ===
+                                        'sin_copyright'
+                                            ? 'selected'
+                                            : ''
+                                    }
+                                >
+                                    Sin copyright
+                                </option>
+
+                                <option
+                                    value="copyright"
+                                    ${
+                                        item.licencia ===
+                                        'copyright'
+                                            ? 'selected'
+                                            : ''
+                                    }
+                                >
+                                    Con copyright
+                                </option>
+                            </select>
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Marca de agua
+                            </label>
+
+                            <input
+                                class="form-control marca-imagen"
+                                type="text"
+                                name="marcas_de_agua"
+                                value="${item.marcaAgua}"
+                                placeholder="Ej: © Usuario Fotaza"
+                            >
+
+                            <div class="form-text">
+                                Solo se utilizará si esta imagen
+                                tiene copyright.
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-check">
+
+                            <input
+                                class="form-check-input comentarios-imagen"
+                                type="checkbox"
+                                name="comentarios_abiertos_indices"
+                                value="${indice}"
+                                id="comentarios_${indice}"
+                                ${
+                                    item.comentariosAbiertos
+                                        ? 'checked'
+                                        : ''
+                                }
+                            >
+
+                            <label
+                                class="form-check-label"
+                                for="comentarios_${indice}"
+                            >
+                                Permitir comentarios
+                            </label>
+
+                        </div>
+                    `;
+
+
+                    const selectLicencia =
+                        bloque.querySelector(
+                            '.licencia-imagen'
+                        );
+
+                    selectLicencia.addEventListener(
+                        'change',
+                        event => {
+                            item.licencia =
+                                event.target.value;
+                        }
+                    );
+
+
+                    const inputMarca =
+                        bloque.querySelector(
+                            '.marca-imagen'
+                        );
+
+                    inputMarca.addEventListener(
+                        'input',
+                        event => {
+                            item.marcaAgua =
+                                event.target.value;
+                        }
+                    );
+
+
+                    const inputComentarios =
+                        bloque.querySelector(
+                            '.comentarios-imagen'
+                        );
+
+                    inputComentarios.addEventListener(
+                        'change',
+                        event => {
+                            item.comentariosAbiertos =
+                                event.target.checked;
+                        }
+                    );
+
+
+                    const botonEliminar =
+                        bloque.querySelector(
+                            '.btn-eliminar-imagen'
+                        );
+
+                    botonEliminar.addEventListener(
+                        'click',
+                        () => {
+
+                            imagenesSeleccionadas.splice(
+                                indice,
+                                1
+                            );
+
+                            actualizarInputFiles();
+
+                            renderizarImagenes();
+                        }
+                    );
+
+
+                    contenedor.appendChild(bloque);
+                }
+            );
+        }
+
+
+        inputImagenes.addEventListener(
+            'change',
+            () => {
+
+                const nuevosArchivos =
+                    Array.from(
+                        inputImagenes.files
+                    );
+
+
+                nuevosArchivos.forEach(
+                    archivo => {
+
+                        const id =
+                            identificadorArchivo(
+                                archivo
+                            );
+
+
+                        const yaExiste =
+                            imagenesSeleccionadas.some(
+                                item =>
+                                    identificadorArchivo(
+                                        item.archivo
+                                    ) === id
+                            );
+
+
+                        if (!yaExiste) {
+
+                            imagenesSeleccionadas.push({
+                                archivo,
+                                licencia:
+                                    'sin_copyright',
+                                marcaAgua:
+                                    '',
+                                comentariosAbiertos:
+                                    true
+                            });
+                        }
+                    }
+                );
+
+
+                actualizarInputFiles();
+
+                renderizarImagenes();
+            }
+        );

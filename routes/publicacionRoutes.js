@@ -6,7 +6,7 @@ import { esUsuarioAutenticado } from '../middlewares/authMiddle.js';
 const router = express.Router();
 
 router.get('/crear', esUsuarioAutenticado, mostrarFormulario);
-router.post('/crear', esUsuarioAutenticado, upload.single('imagen'), crearPublicacion);
-router.post('/eliminar/:id', eliminarPublicacion);
+router.post('/crear', esUsuarioAutenticado, upload.array('imagenes'), crearPublicacion);
+router.post('/eliminar/:id', esUsuarioAutenticado, eliminarPublicacion);
 
 export default router;
