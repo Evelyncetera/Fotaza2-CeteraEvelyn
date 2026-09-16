@@ -35,8 +35,11 @@ export const ejecutarSeed = async (queryInterface = null) => {
     ]);
 
     const publicaciones = await Publicacion.bulkCreate([
-        { titulo: "Mi primer post", descripcion: "Foto increíble", usuario_id: usuarios[0].id },
-        { titulo: "Atardecer en San Luis", descripcion: "Disfrutando el paisaje", usuario_id: usuarios[1].id }
+        { titulo: "Mi primer post", descripcion: "Foto increíble", usuario_id: usuarios[0].id, 
+            createdAt: new Date('2026-09-10T12:00:00-03:00'), updatedAt: new Date('2026-09-10T12:00:00-03:00')},
+        { titulo: "Atardecer en San Luis", descripcion: "Disfrutando el paisaje", usuario_id: usuarios[1].id,
+            //createdAt: new Date('2026-09-12T18:30:00-03:00'), updatedAt: new Date('2026-09-12T18:30:00-03:00')
+        }
     ]);
     console.log("Publicaciones creadas correctamente.");
 

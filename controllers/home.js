@@ -91,7 +91,8 @@ export const mostrarHome = async (req, res) => {
         res.render('home', {
             publicaciones,
             seguidos,
-            fotosmostradas: []
+            fotosmostradas: [],
+            filtros: {}
         });
     } catch (error) {
         console.error(error);
