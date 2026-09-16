@@ -1,0 +1,59 @@
+extends layout
+
+block content
+
+    .card.shadow-sm.mb-4
+        .card-body
+
+            .d-flex.align-items-center.gap-3
+
+                if usuario.avatar
+                    img.rounded-circle(
+                        src=usuario.avatar
+                        width="80"
+                        height="80"
+                        style="object-fit: cover;"
+                    )
+
+                div
+                    h2.mb-1
+                        | #{usuario.nombre} #{usuario.apellido}
+
+                    p.text-muted.mb-0
+                        | #{seguidores} seguidores · #{seguidos} seguidos
+
+
+    h4.mb-3
+        | Publicaciones
+
+
+    if publicaciones.length === 0
+
+        p.text-muted
+            | Este usuario todavía no tiene publicaciones.
+
+    else
+
+        .row.g-3
+
+            each publicacion in publicaciones
+
+                .col-md-6
+
+                    .card.shadow-sm
+
+                        if publicacion.imagenes && publicacion.imagenes.length > 0
+
+                            img.card-img-top(
+                                src=publicacion.imagenes[0].archivo
+                                style="height: 250px; object-fit: contain; background: #111;"
+                            )
+
+                        .card-body
+
+                            h5.card-title
+                                = publicacion.titulo
+
+                            if publicacion.descripcion
+                                p.card-text
+                                    = publicacion.descripcion

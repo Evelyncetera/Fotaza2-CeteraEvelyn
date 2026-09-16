@@ -1,11 +1,10 @@
 import express from 'express';
-
-import {
-    mostrarPerfil
-} from '../controllers/perfil.js';
+import { mostrarPerfil, mostrarPerfilPublico } from '../controllers/perfil.js';
+import { esUsuarioAutenticado } from '../middlewares/authMiddle.js';
 
 const router = express.Router();
 
-router.get('/', mostrarPerfil);
+router.get('/', esUsuarioAutenticado, mostrarPerfil);
+router.get('/:id', esUsuarioAutenticado, mostrarPerfilPublico);
 
 export default router;

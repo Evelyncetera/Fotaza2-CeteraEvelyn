@@ -1,0 +1,78 @@
+extends layout
+
+block content
+
+    if mensaje
+        .alert(
+            class=`alert-${tipoMensaje}`
+            role="alert"
+        )
+            = mensaje
+
+
+    h1.mb-4
+        | Personas interesadas en mis imágenes
+
+
+    if intereses.length === 0
+
+        .alert.alert-light.border
+            | Todavía nadie marcó interés en tus imágenes.
+
+    else
+
+        .row.g-3
+
+            each interes in intereses
+
+                .col-md-6
+
+                    .card.h-100.shadow-sm
+
+                        if interes.Imagen
+                            img.card-img-top(
+                                src=interes.Imagen.archivo
+                                alt="Imagen de la publicación"
+                                style="height: 220px; object-fit: contain; background: #111;"
+                            )
+
+                        .card-body
+
+                            if interes.Imagen && interes.Imagen.publicacion
+
+                                h5.card-title
+                                    = interes.Imagen.publicacion.titulo
+
+
+                            p.mb-2
+                                strong Interesado:
+                                |  #{interes.User.nombre} #{interes.User.apellido}
+
+
+                            if interes.User.avatar
+
+                                img.rounded-circle.mb-3(
+                                    src=interes.User.avatar
+                                    alt="Avatar"
+                                    width="55"
+                                    height="55"
+                                    style="object-fit: cover;"
+                                )
+
+
+                            .d-flex.gap-2
+
+                                a.btn.btn-outline-primary.btn-sm(
+                                    href=`/perfil/${interes.User.id}`
+                                )
+                                    i.bi.bi-person
+                                    |  Ver perfil
+
+
+                                // Este botón lo conectaremos
+                                // enseguida con mensajería
+                                a.btn.btn-primary.btn-sm(
+                                    href=`/mensajes/iniciar/${interes.id}`
+                                )
+                                    i.bi.bi-chat-dots
+                                    |  Enviar mensaje

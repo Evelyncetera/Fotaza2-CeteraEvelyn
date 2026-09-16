@@ -88,3 +88,71 @@ export const mostrarPerfil = async (req, res) => {
         );
     }
 };
+export const mostrarPerfilPublico = async (req, res, next) => {
+
+    try {
+        const usuario = await Usuario.findByPk(
+                req.params.id,
+                {
+                    attributes: [
+                        'id',
+                        'nombre',
+                        'apellido',
+                        'avatar'
+                    ]
+                }
+            );
+
+        if (!usuario) {
+
+            req.session.mensaje = 'El usuario no existe.';
+            req.session.tipoMensaje = 'warning';
+            return res.redirect('/');
+        }
+
+        const publicaciones = await Publicacion.findAll({
+                where: {
+                    usuario_id:
+                        usuario.id
+                },
+                include: [
+                    {
+                        model: Imagen,
+                        as: 'imagenes'
+                    }
+                ],
+                order: [
+                    ['createdAt', 'DESC']
+                ]
+            });
+
+        const seguidores =
+            await Follower.count({
+                where: {
+                    seguido_id:
+                        usuario.id
+                }
+            });
+
+        const seguidos =
+            await Follower.count({
+                where: {
+                    seguidor_id:
+                        usuario.id
+                }
+            });
+
+        return res.render(
+            'perfilPublico',
+            {
+                usuario,
+                publicaciones,
+                seguidores,
+                seguidos
+            }
+        );
+    } catch (error) {
+
+        next(error);
+    }
+};
