@@ -79,11 +79,61 @@ export const mostrarHome = async (req, res) => {
                 imagen.setDataValue('promedioValoraciones',promedio);
             }
         }
+        //Relevancia 
+        for (const publicacion of publicaciones) {
+            
+            let cantidadTotal = 0;
+            let sumaTotal = 0;
 
+            for (const imagen of publicacion.imagenes || []) {
+
+                for (const valoracion of imagen.valoraciones || []) {
+
+                    cantidadTotal++;
+                    sumaTotal += valoracion.valor;
+                }
+            }
+            const promedioGeneral = cantidadTotal > 0 ? sumaTotal / cantidadTotal : 0;
+            const destacada = cantidadTotal >= 3 && promedioGeneral >= 4;
+
+            publicacion.setDataValue('cantidadValoraciones', cantidadTotal);
+            publicacion.setDataValue('promedioValoraciones', promedioGeneral);
+            publicacion.setDataValue('destacada', destacada);
+        }
+
+        const destacadas = publicaciones.filter(
+                publicacion =>
+                    publicacion.getDataValue('destacada')
+            );
+        const normales = publicaciones.filter(
+                publicacion =>
+                    !publicacion.getDataValue('destacada')
+            );
+
+        const publicacionesOrdenadas = [];
+        let indiceDestacadas = 0;
+        let indiceNormales = 0;
+
+        while (indiceDestacadas < destacadas.length || indiceNormales < normales.length) {
+
+            // Hasta 2 destacadas
+            for (let i = 0; i < 2 && indiceDestacadas < destacadas.length; i++) {
+
+                publicacionesOrdenadas.push(destacadas[indiceDestacadas]);
+                indiceDestacadas++;
+            }
+            // despuès 1 normal
+            if (indiceNormales < normales.length) {
+
+                publicacionesOrdenadas.push(
+                    normales[indiceNormales]
+                );
+                indiceNormales++;
+            }
+        }
         let seguidos = [];
 
         if (usuarioId) {
-            
             const seguimientos = await Follower.findAll({
                 where: {
                     seguidor_id: usuarioId
@@ -102,7 +152,7 @@ export const mostrarHome = async (req, res) => {
 
         
         res.render('home', {
-            publicaciones,
+            publicaciones: publicacionesOrdenadas,
             seguidos,
             fotosmostradas: [],
             filtros: {},

@@ -9,11 +9,13 @@ import cloudinary from '../middlewares/cloudinary.js';
 import Tag from '../models/Tag.js';
 import '../models/PublicacionTag.js';
 import '../models/Notificacion.js';
+import Valoracion from '../models/Valoracion.js';
 
 export const ejecutarSeed = async (queryInterface = null) => {
     const salt = await bcrypt.genSalt(10);
     const pass = await bcrypt.hash('123456', salt);
 
+    // --------------------- ROL ------------------------
     const [rolComun] = await Rol.findOrCreate({
         where: {
             nombre: 'comun'
@@ -25,7 +27,7 @@ export const ejecutarSeed = async (queryInterface = null) => {
             nombre: 'validador'
         }
     });
-
+    // ------------ Usuarios -----------------------
     const usuarios = await User.bulkCreate([
         //usuarios comunes
         { nombre: 'UsuarioA', apellido: 'Demo', email: 'usuarioA@fotaza.com', password_hash: pass, rol_id: rolComun.id, avatar: 'https://res.cloudinary.com/tu-cloud/image/upload/v1/avatar1.jpg'},
@@ -38,6 +40,13 @@ export const ejecutarSeed = async (queryInterface = null) => {
         {nombre: 'Validador', apellido: 'Demo', email: 'validador@fotaza.com', password_hash: pass, rol_id: rolValidador.id, activo: true}
     ]);
 
+    const [
+        usuarioA,
+        usuarioB,
+        usuarioC,
+        usuarioD
+    ] = usuarios;
+    // ---------- URL Transformada para imagenes con Marca de agua --------------
     const imagenUsuarioC = cloudinary.url(
         'fotaza2/zjis53wkbwptclfekjbm',
         {
@@ -52,7 +61,7 @@ export const ejecutarSeed = async (queryInterface = null) => {
         }
     );
 
-
+    // ------------------Publicaciones ----------------
     const publicaciones = await Publicacion.bulkCreate([
         { 
             titulo: "Mi primer post", 
@@ -68,16 +77,16 @@ export const ejecutarSeed = async (queryInterface = null) => {
             updatedAt: new Date('2026-09-12T18:30:00-03:00')
         },
         {
-            titulo: "Salida en bicicleta",
-            descripcion: "Una tarde recorriendo la ciudad",
+            titulo: "Diseño Arquitectónico",
+            descripcion: "Plano y distribución de un proyecto arquitectónico",
             usuario_id: usuarios[2].id,
             createdAt: new Date('2026-09-13T16:00:00-03:00'),
             updatedAt: new Date('2026-09-13T16:00:00-03:00')
         },
 
         {
-            titulo: "Explorando nuevos lugares",
-            descripcion: "Una nueva fotografía para compartir",
+            titulo: "Planificación de espacios",
+            descripcion: "Propuesta de distribución y organización de espacios",
             usuario_id: usuarios[3].id,
             createdAt: new Date('2026-09-14T11:30:00-03:00'),
             updatedAt: new Date('2026-09-14T11:30:00-03:00')
@@ -85,14 +94,16 @@ export const ejecutarSeed = async (queryInterface = null) => {
     ]);
     console.log("Publicaciones creadas correctamente.");
 
+    // ------------------Tags----------------
     const nombresTags = [
         'paisaje',
         'naturaleza',
         'atardecer',
-        'san luis',
-        'bicicleta',
-        'ciudad',
-        'aventura'
+        'playa',
+        'arquitectura',
+        'planos',
+        'diseño',
+        'espacios'
     ];
     const tags = {};
 
@@ -111,20 +122,20 @@ export const ejecutarSeed = async (queryInterface = null) => {
 
     await publicaciones[1].setTags([
         tags['atardecer'],
-        tags['san luis']
+        tags['playa']
     ]);
 
     await publicaciones[2].setTags([
-        tags['bicicleta'],
-        tags['ciudad']
+        tags['arquitectura'],
+        tags['planos']
     ]);
 
     await publicaciones[3].setTags([
-        tags['aventura'],
-        tags['naturaleza']
+        tags['diseño'],
+        tags['espacios']
     ]);
 
-
+    //-------------Marca de agua -----------------
     const generarMarcaAgua = (usuario) => {
         return `© ${usuario.nombre} ${usuario.apellido}`;
     };
@@ -179,8 +190,8 @@ export const ejecutarSeed = async (queryInterface = null) => {
             ]
         }
     );
-
-    await Imagen.bulkCreate([
+    // ---------------- IMAGENES ---------------
+    const imagenes = await Imagen.bulkCreate([
         {
             archivo: "https://res.cloudinary.com/dlvrrops9/image/upload/v1781237614/fotaza2/uujzf0fdqnfycpfslvz1.jpg",
             publicacion_id: publicaciones[0].id,
@@ -202,7 +213,6 @@ export const ejecutarSeed = async (queryInterface = null) => {
             marca_de_agua: null,
             comentarios_abiertos: true
         },
-
         {
             archivo: imagenUsuarioD,
             publicacion_id: publicaciones[3].id,
@@ -211,6 +221,88 @@ export const ejecutarSeed = async (queryInterface = null) => {
             comentarios_abiertos: true
         }
     ]);
+    const [
+        imagen1,
+        imagen2,
+        imagen3,
+        imagen4
+    ] = imagenes;
+
+    // -------------------Valoraciones ------------------
+    await Valoracion.bulkCreate([
+        // PUBLICACIÓN A - 3 votos - promedio 4.67  [DESTACADA]
+        // Autor: UsuarioA
+
+        {
+            usuario_id: usuarioB.id,
+            imagen_id: imagen1.id,
+            valor: 5
+        },
+        {
+            usuario_id: usuarioC.id,
+            imagen_id: imagen1.id,
+            valor: 5
+        },
+        {
+            usuario_id: usuarioD.id,
+            imagen_id: imagen1.id,
+            valor: 4
+        },
+
+        // PUBLICACIÓN B - 2 votos - promedio 5.00  [ No Destacada por falta de votos]
+        // Autor: UsuarioB
+        {
+            usuario_id: usuarioA.id,
+            imagen_id: imagen2.id,
+            valor: 5
+        },
+        {
+            usuario_id: usuarioC.id,
+            imagen_id: imagen2.id,
+            valor: 5
+        },
+
+        // PUBLICACIÓN C - 3 votos - promedio 3.33 - [NO destacada por promedio insuficiente]
+        // Autor: UsuarioC
+        {
+            usuario_id: usuarioA.id,
+            imagen_id: imagen3.id,
+            valor: 3
+        },
+        {
+            usuario_id: usuarioB.id,
+            imagen_id: imagen3.id,
+            valor: 3
+        },
+        {
+            usuario_id: usuarioD.id,
+            imagen_id: imagen3.id,
+            valor: 4
+        },
+
+
+        // ==========================================
+        // PUBLICACIÓN D - 3 votos - promedio 4.33 - [Destacada]
+        // Autor: UsuarioD
+
+        {
+            usuario_id: usuarioA.id,
+            imagen_id: imagen4.id,
+            valor: 4
+        },
+        {
+            usuario_id: usuarioB.id,
+            imagen_id: imagen4.id,
+            valor: 5
+        },
+        {
+            usuario_id: usuarioC.id,
+            imagen_id: imagen4.id,
+            valor: 4
+        }
+    ]);
+
+    // ------------------Followers ----------------
     await Follower.bulkCreate([
         {
             seguidor_id: usuarios[0].id,
