@@ -9,118 +9,124 @@ block content
         )
             = mensaje
 
+    if mostrarBusqueda !== false
+
     .card.mb-4
-    .card-body
+        .card-body
 
-        h5 Buscar publicaciones
+            h5 Buscar publicaciones
 
-        form(
-            action="/buscar"
-            method="GET"
-        )
+            form(
+                action="/buscar"
+                method="GET"
+            )
 
-            .row.g-2
-
-                .col-md-4
-
-                    label.form-label
-                        | Título
-
-                    input.form-control(
-                        type="text"
-                        name="titulo"
-                        placeholder="Ej: Atardecer"
-                        value=filtros ? filtros.titulo : ''
-                    )
-
-
-                .col-md-4
-
-                    label.form-label
-                        | Autor
-
-                    input.form-control(
-                        type="text"
-                        name="autor"
-                        placeholder="Nombre o apellido"
-                        value=filtros ? filtros.autor : ''
-                    )
-
-
-                .col-md-4
-
-                    label.form-label
-                        | Etiqueta
-
-                    input.form-control(
-                        type="text"
-                        name="tag"
-                        placeholder="Ej: paisaje"
-                        value=filtros ? filtros.tag : ''
-                    )
-
-
-                .col-md-4
-
-                    label.form-label
-                        | Fecha
-
-                    input.form-control(
-                        type="date"
-                        name="fecha"
-                        value=filtros ? filtros.fecha : ''
-                    )
-
-
-                if usuarioLogueado
+                .row.g-2
 
                     .col-md-4
 
                         label.form-label
-                            | Licencia
+                            | Título
 
-                        select.form-select(
-                            name="licencia"
+                        input.form-control(
+                            type="text"
+                            name="titulo"
+                            placeholder="Ej: Atardecer"
+                            value=filtros ? filtros.titulo : ''
                         )
 
-                            option(
-                                value=""
-                                selected=!filtros || !filtros.licencia
+
+                    .col-md-4
+
+                        label.form-label
+                            | Autor
+
+                        input.form-control(
+                            type="text"
+                            name="autor"
+                            placeholder="Nombre o apellido"
+                            value=filtros ? filtros.autor : ''
+                        )
+
+
+                    .col-md-4
+
+                        label.form-label
+                            | Etiqueta
+
+                        input.form-control(
+                            type="text"
+                            name="tag"
+                            placeholder="Ej: paisaje"
+                            value=filtros ? filtros.tag : ''
+                        )
+
+
+                    .col-md-4
+
+                        label.form-label
+                            | Fecha
+
+                        input.form-control(
+                            type="date"
+                            name="fecha"
+                            value=filtros ? filtros.fecha : ''
+                        )
+
+
+                    if usuarioLogueado
+
+                        .col-md-4
+
+                            label.form-label
+                                | Licencia
+
+                            select.form-select(
+                                name="licencia"
                             )
-                                | Todas
 
-                            option(
-                                value="sin_copyright"
-                                selected=filtros && filtros.licencia === 'sin_copyright'
-                            )
-                                | Sin copyright
+                                option(
+                                    value=""
+                                    selected=!filtros || !filtros.licencia
+                                )
+                                    | Todas
 
-                            option(
-                                value="copyright"
-                                selected=filtros && filtros.licencia === 'copyright'
-                            )
-                                | Con copyright
+                                option(
+                                    value="sin_copyright"
+                                    selected=filtros && filtros.licencia === 'sin_copyright'
+                                )
+                                    | Sin copyright
+
+                                option(
+                                    value="copyright"
+                                    selected=filtros && filtros.licencia === 'copyright'
+                                )
+                                    | Con copyright
 
 
-                .col-md-4.d-flex.align-items-end.gap-2
+                    .col-md-4.d-flex.align-items-end.gap-2
 
-                    button.btn.btn-primary.flex-grow-1(
-                        type="submit"
-                    )
-                        i.bi.bi-search
-                        |  Buscar
+                        button.btn.btn-primary.flex-grow-1(
+                            type="submit"
+                        )
+                            i.bi.bi-search
+                            |  Buscar
 
-                    a.btn.btn-secondary(
-                        href="/"
-                    )
-                        | Limpiar
+                        a.btn.btn-secondary(
+                            href="/"
+                        )
+                            | Limpiar
 
-    h1.my-4 Feed
-    if usuarioLogueado
-        a.btn.btn-success.mb-4(
-            href="/publicaciones/crear"
-        )
-            | Nueva publicación
+    .d-flex.justify-content-between.align-items-center.my-4
+        h1.mb-0
+            = tituloFeed || 'Feed'
+
+        if usuarioLogueado
+            a.btn.btn-success(
+                href="/publicaciones/crear"
+            )
+                i.bi.bi-plus-lg
+                |  Nueva publicación
 
 
     .feed-grid

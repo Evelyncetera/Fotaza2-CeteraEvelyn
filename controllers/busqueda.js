@@ -177,7 +177,9 @@ export const buscarPublicaciones = async (req, res) => {
                 tag,
                 fecha,
                 licencia
-            }
+            },
+            tituloFeed: 'Resultados de búsqueda',
+            mostrarBusqueda: true
         });
 
     } catch(error) {

@@ -92,7 +92,9 @@ export const mostrarHome = async (req, res) => {
             publicaciones,
             seguidos,
             fotosmostradas: [],
-            filtros: {}
+            filtros: {},
+            tituloFeed: 'Feed',
+            mostrarBusqueda: true
         });
     } catch (error) {
         console.error(error);

@@ -1,9 +1,11 @@
 import express from 'express';
-import { seguirUsuario, dejarDeSeguir } from '../controllers/follower.js';
+import { seguirUsuario, dejarDeSeguir, mostrarPublicacionesSeguidos } from '../controllers/follower.js';
+import { esUsuarioAutenticado } from "../middlewares/authMiddle.js";
 
 const router = express.Router();
 
-router.post('/seguir', seguirUsuario);
-router.post('/dejar-seguir', dejarDeSeguir);
+router.get('/seguidos', esUsuarioAutenticado, mostrarPublicacionesSeguidos);
+router.post('/seguir', esUsuarioAutenticado, seguirUsuario);
+router.post('/dejar-seguir', esUsuarioAutenticado, dejarDeSeguir);
 
 export default router;
