@@ -10,4 +10,23 @@ const storage = new CloudinaryStorage({
     }
 });
 
-export const upload = multer({ storage });
+const upload = multer({
+    storage,
+    limits: { fileSize: 10 * 1024 * 1024 }
+});
+
+export const uploadArray = (fieldName) => (req, res, next) => {
+    upload.array(fieldName)(req, res, (err) => {
+        if (err) {
+            if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+                req.session.mensaje = 'Una imagen supera el límite de 10 MB.';
+                req.session.tipoMensaje = 'warning';
+                return res.redirect('/publicaciones/crear');
+            }
+            return next(err);
+        }
+        next();
+    });
+};
+
+export { upload };

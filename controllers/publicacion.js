@@ -7,7 +7,21 @@ import Tag from '../models/Tag.js';
 import Usuario from '../models/Usuario.js';
 import Coleccion from '../models/Coleccion.js';
 import cloudinary from '../middlewares/cloudinary.js';
+import { sequelize } from '../models/config.js';
 import '../models/PublicacionTag.js';
+
+const limpiarArchivosCloudinary = async (files) => {
+    if (!files || files.length === 0) return;
+    for (const archivo of files) {
+        try {
+            if (archivo.filename) {
+                await cloudinary.uploader.destroy(archivo.filename);
+            }
+        } catch (cleanupError) {
+            console.error('Error limpiando Cloudinary:', cleanupError.message);
+        }
+    }
+};
 
 
 
@@ -105,6 +119,8 @@ export const mostrarFormulario = (req, res) => {
 
 export const crearPublicacion = async (req, res) => {
 
+    let persistenciaCompletada = false;
+
     try {
         if (!req.session.usuarioId) {
             return res.redirect('/auth/login');
@@ -141,79 +157,77 @@ export const crearPublicacion = async (req, res) => {
         };
 
         const licencias = normalizarArray(req.body.licencias);
-        const marcasAgua =normalizarArray(req.body.marcas_de_agua);
-        const indicesComentarios =normalizarArray(req.body.comentarios_abiertos_indices);
+        const marcasAgua = normalizarArray(req.body.marcas_de_agua);
+        const indicesComentarios = normalizarArray(req.body.comentarios_abiertos_indices);
         const comentariosAbiertos = new Set(indicesComentarios.map(Number));
 
         if (licencias.length !== req.files.length) {
 
             req.session.mensaje = 'No se pudo determinar la licencia de todas las imágenes.';
             req.session.tipoMensaje = 'warning';
-
+            await limpiarArchivosCloudinary(req.files);
             return res.redirect('/publicaciones/crear');
         }
 
         const licenciasValidas = ['sin_copyright', 'copyright'];
-        const hayLicenciaInvalida = licencias.some( licencia => !licenciasValidas.includes(licencia));
+        const hayLicenciaInvalida = licencias.some(licencia => !licenciasValidas.includes(licencia));
 
 
         if (hayLicenciaInvalida) {
 
-            req.session.mensaje ='Se detectó una licencia inválida.';
+            req.session.mensaje = 'Se detectó una licencia inválida.';
             req.session.tipoMensaje = 'warning';
-
+            await limpiarArchivosCloudinary(req.files);
             return res.redirect('/publicaciones/crear');
         }
 
         if (tagsUnicos.length === 0) {
 
             req.session.mensaje = 'La publicación debe contener al menos una etiqueta.';
-            req.session.tipoMensaje ='warning';
-
+            req.session.tipoMensaje = 'warning';
+            await limpiarArchivosCloudinary(req.files);
             return res.redirect('/publicaciones/crear');
         }
 
         const tagDemasiadoLargo = tagsUnicos.some(tag => tag.length > 50);
 
         if (tagDemasiadoLargo) {
-            req.session.mensaje ='Las etiquetas no pueden superar los 50 caracteres.';
-            req.session.tipoMensaje ='warning';
-
+            req.session.mensaje = 'Las etiquetas no pueden superar los 50 caracteres.';
+            req.session.tipoMensaje = 'warning';
+            await limpiarArchivosCloudinary(req.files);
             return res.redirect('/publicaciones/crear');
         }
 
-        const nuevaPublicacion = await Publicacion.create({
+        await sequelize.transaction(async (t) => {
+            const nuevaPublicacion = await Publicacion.create({
                 usuario_id: req.session.usuarioId,
                 titulo,
                 descripcion,
-                comentarios_abiertos : true
-            });
+                comentarios_abiertos: true
+            }, { transaction: t });
 
-        const tagAsociados =[];
-        for(const nombre of tagsUnicos){
-            const[tag] = await Tag.findOrCreate({
-                where: {
-                    nombre
-                },
-                defaults: {
-                    nombre
-                }
-            });
-            tagAsociados.push(tag);
+            const tagAsociados = [];
+            for (const nombre of tagsUnicos) {
+                const [tag] = await Tag.findOrCreate({
+                    where: { nombre },
+                    defaults: { nombre },
+                    transaction: t
+                });
+                tagAsociados.push(tag);
             }
-        
-        await nuevaPublicacion.setTags(tagAsociados);
 
-        for (let indice = 0; indice < req.files.length; indice++) {
+            await nuevaPublicacion.setTags(tagAsociados, { transaction: t });
 
-            const archivo = req.files[indice];
-            const licencia = licencias[indice];
+            for (let indice = 0; indice < req.files.length; indice++) {
 
-            let archivoFinal = archivo.path;
-            let marcaAgua = null;
+                const archivo = req.files[indice];
+                const licencia = licencias[indice];
+
+                let archivoFinal = archivo.path;
+                let marcaAgua = null;
 
                 if (licencia === 'copyright') {
-                    
+
                     marcaAgua = marcasAgua[indice]?.trim() || '© Fotaza 2';
 
                     archivoFinal = cloudinary.url(
@@ -272,15 +286,23 @@ export const crearPublicacion = async (req, res) => {
                     licencia,
                     marca_de_agua: marcaAgua,
                     comentarios_abiertos: comentariosAbiertos.has(indice)
-                });
-        }
+                }, { transaction: t });
+            }
+        });
+
+        persistenciaCompletada = true;
 
         req.session.mensaje = 'Publicación creada correctamente.';
-        req.session.tipoMensaje ='success';
+        req.session.tipoMensaje = 'success';
         res.redirect('/');
 
     } catch (error) {
         console.error(error);
+
+        if (!persistenciaCompletada && req.files && req.files.length > 0) {
+            await limpiarArchivosCloudinary(req.files);
+        }
+
         req.session.mensaje = 'Error al crear publicación.';
         req.session.tipoMensaje = 'danger';
         res.redirect('/');
