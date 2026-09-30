@@ -235,45 +235,159 @@ export const crearPublicacion = async (req, res) => {
                         {
                             secure: true,
                             transformation: [
+                                // Capa 1: Centro - diagonal principal
                                 {
                                     overlay: {
                                         font_family: 'Arial',
-                                        font_size: 100,
-                                        font_weight: 'bold',
-                                        text: marcaAgua
-                                    },
-                                    color: 'black',
-                                    opacity: 90
-                                },
-                                {
-                                    width: 0.27,
-                                    flags: 'relative'
-                                },
-                                {
-                                    flags: 'layer_apply',
-                                    gravity: 'south_east',
-                                    x: 0.02,
-                                    y: 0.02
-                                },
-                                {
-                                    overlay: {
-                                        font_family: 'Arial',
-                                        font_size: 100,
+                                        font_size: 80,
                                         font_weight: 'bold',
                                         text: marcaAgua
                                     },
                                     color: 'white',
-                                    opacity: 90
+                                    opacity: 30
                                 },
                                 {
-                                    width: 0.25,
+                                    width: 0.6,
                                     flags: 'relative'
                                 },
                                 {
-                                    flags: 'layer_apply',
+                                    angle: 45,
+                                    flags: ['layer_apply', 'no_overflow'],
+                                    gravity: 'center',
+                                    x: 0,
+                                    y: 0
+                                },
+                                // Capa 2: Esquina superior izquierda
+                                {
+                                    overlay: {
+                                        font_family: 'Arial',
+                                        font_size: 50,
+                                        font_weight: 'bold',
+                                        text: marcaAgua
+                                    },
+                                    color: 'white',
+                                    opacity: 25
+                                },
+                                {
+                                    width: 0.35,
+                                    flags: 'relative'
+                                },
+                                {
+                                    angle: -30,
+                                    flags: ['layer_apply', 'no_overflow'],
+                                    gravity: 'north_west',
+                                    x: 0.05,
+                                    y: 0.05
+                                },
+                                // Capa 3: Esquina superior derecha
+                                {
+                                    overlay: {
+                                        font_family: 'Arial',
+                                        font_size: 50,
+                                        font_weight: 'bold',
+                                        text: marcaAgua
+                                    },
+                                    color: 'white',
+                                    opacity: 25
+                                },
+                                {
+                                    width: 0.35,
+                                    flags: 'relative'
+                                },
+                                {
+                                    angle: 30,
+                                    flags: ['layer_apply', 'no_overflow'],
+                                    gravity: 'north_east',
+                                    x: 0.05,
+                                    y: 0.05
+                                },
+                                // Capa 4: Esquina inferior izquierda
+                                {
+                                    overlay: {
+                                        font_family: 'Arial',
+                                        font_size: 50,
+                                        font_weight: 'bold',
+                                        text: marcaAgua
+                                    },
+                                    color: 'white',
+                                    opacity: 25
+                                },
+                                {
+                                    width: 0.35,
+                                    flags: 'relative'
+                                },
+                                {
+                                    angle: 30,
+                                    flags: ['layer_apply', 'no_overflow'],
+                                    gravity: 'south_west',
+                                    x: 0.05,
+                                    y: 0.05
+                                },
+                                // Capa 5: Esquina inferior derecha
+                                {
+                                    overlay: {
+                                        font_family: 'Arial',
+                                        font_size: 50,
+                                        font_weight: 'bold',
+                                        text: marcaAgua
+                                    },
+                                    color: 'white',
+                                    opacity: 25
+                                },
+                                {
+                                    width: 0.35,
+                                    flags: 'relative'
+                                },
+                                {
+                                    angle: -30,
+                                    flags: ['layer_apply', 'no_overflow'],
                                     gravity: 'south_east',
-                                    x: 0.02,
-                                    y: 0.02
+                                    x: 0.05,
+                                    y: 0.05
+                                },
+                                // Capa 6: Centro-izquierda
+                                {
+                                    overlay: {
+                                        font_family: 'Arial',
+                                        font_size: 45,
+                                        font_weight: 'bold',
+                                        text: marcaAgua
+                                    },
+                                    color: 'white',
+                                    opacity: 20
+                                },
+                                {
+                                    width: 0.3,
+                                    flags: 'relative'
+                                },
+                                {
+                                    angle: 45,
+                                    flags: ['layer_apply', 'no_overflow'],
+                                    gravity: 'west',
+                                    x: 0.1,
+                                    y: -0.15
+                                },
+                                // Capa 7: Centro-derecha
+                                {
+                                    overlay: {
+                                        font_family: 'Arial',
+                                        font_size: 45,
+                                        font_weight: 'bold',
+                                        text: marcaAgua
+                                    },
+                                    color: 'white',
+                                    opacity: 20
+                                },
+                                {
+                                    width: 0.3,
+                                    flags: 'relative'
+                                },
+                                {
+                                    angle: -45,
+                                    flags: ['layer_apply', 'no_overflow'],
+                                    gravity: 'east',
+                                    x: -0.1,
+                                    y: 0.15
                                 }
                             ]
                         }
