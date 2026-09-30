@@ -37,7 +37,12 @@ import { usuarioMiddleware } from './middlewares/authMiddle.js';
 
 
 const app = express();
-const PORT = process.env.PORT; 
+
+const PORT =Number(process.env.PORT || 3000);
+
+if (!Number.isInteger(PORT) || PORT < 1 || PORT > 65535) {
+    throw new Error(`PORT inválido: "${process.env.PORT}"`);
+}
 
 app.set('view engine', 'pug');
 app.set('views', './views');
@@ -92,12 +97,16 @@ app.use((err, req, res, next) => {
 // Conexion a BD
 conexionDB()
     .then(() => {
-        app.listen(PORT, (err) =>{
+        const server = app.listen(PORT, () => {
             console.log(`Servidor escuchando en el puerto ${PORT}`);
         });
+
+        server.on('error', (error) => {
+            console.error('Error al iniciar el servidor:', error);
+        });
     })
-    .catch((err) => {
-        console.error('Error al iniciar el servidor: ', err);
+    .catch((error) => {
+        console.error('Error al conectar con la base de datos:', error);
     });
 
 
