@@ -174,15 +174,14 @@ block content
 
                         if usuarioLogueado && usuarioLogueado == publicacion.User.id
 
-                            form(
-                                action=`/publicaciones/eliminar/${publicacion.id}`
-                                method="POST"
-                                class="m-0"
+                            button.btn.btn-link.text-danger.p-0(
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEliminarPublicacion"
+                                data-publicacion-id=publicacion.id
+                                title="Eliminar publicación"
                             )
-                                button.btn.btn-link.text-danger.p-0(
-                                    type="submit"
-                                )
-                                    i.bi.bi-trash
+                                i.bi.bi-trash
 
                 // DATOS GENERALES
                 .card-body
@@ -499,3 +498,53 @@ block content
                     .card-body
                         p.text-muted
                             | Esta publicación no tiene imágenes disponibles.
+
+    // Modal de confirmación para eliminar publicación
+    .modal.fade(
+        id="modalEliminarPublicacion"
+        tabindex="-1"
+        aria-labelledby="modalEliminarPublicacionLabel"
+        aria-hidden="true"
+    )
+        .modal-dialog.modal-dialog-centered
+            .modal-content
+                .modal-header
+                    h5.modal-title#modalEliminarPublicacionLabel Eliminar publicación
+                    button.btn-close(
+                        type="button"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar"
+                    )
+                .modal-body
+                    p ¿Seguro que querés eliminar esta publicación?
+                .modal-footer
+                    button.btn.btn-secondary(
+                        type="button"
+                        data-bs-dismiss="modal"
+                    )
+                        | Cancelar
+                    form#formEliminarPublicacion(
+                        action=""
+                        method="POST"
+                        class="m-0"
+                    )
+                        button.btn.btn-danger(
+                            type="submit"
+                        )
+                            | Eliminar
+
+    script.
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('modalEliminarPublicacion');
+            const form = document.getElementById('formEliminarPublicacion');
+
+            if (modal && form) {
+                modal.addEventListener('show.bs.modal', event => {
+                    const button = event.relatedTarget;
+                    const publicacionId = button.getAttribute('data-publicacion-id');
+                    if (publicacionId) {
+                        form.action = `/publicaciones/eliminar/${publicacionId}`;
+                    }
+                });
+            }
+        });

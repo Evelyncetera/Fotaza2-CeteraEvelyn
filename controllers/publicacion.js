@@ -452,6 +452,9 @@ export const eliminarPublicacion = async (req, res) => {
         });
         
         await publicacion.destroy();
+
+        req.session.mensaje = 'Publicación eliminada correctamente.';
+        req.session.tipoMensaje = 'success';
         res.redirect('/');
 
     } catch (error) {
