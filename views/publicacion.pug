@@ -62,10 +62,13 @@ block content
                                 accept="image/*"
                                 multiple
                                 required
+                                aria-describedby="imagenes-error"
                             )
 
                             .form-text
                                 | Podés elegir varias imagenes.
+
+                            #imagenes-error.invalid-feedback(aria-live="polite" style="display:none;")
 
                         #configuracionesImagenes
 
@@ -84,8 +87,44 @@ block content
                 'configuracionesImagenes'
             );
 
+        const errorImagenes =
+            document.getElementById('imagenes-error');
+
+        const formulario =
+            document.querySelector('form[action="/publicaciones/crear"]');
+
         let imagenesSeleccionadas = [];
 
+        const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+
+        function separarArchivosPorTamano(archivos) {
+            const validos = [];
+            const invalidos = [];
+            for (const archivo of archivos) {
+                if (archivo.size > MAX_FILE_SIZE) {
+                    invalidos.push(archivo);
+                } else {
+                    validos.push(archivo);
+                }
+            }
+            return { validos, invalidos };
+        }
+
+        function mostrarErrorInvalidos(invalidos) {
+            if (invalidos.length === 0) {
+                errorImagenes.style.display = 'none';
+                inputImagenes.classList.remove('is-invalid');
+                return;
+            }
+            if (invalidos.length === 1) {
+                const nombre = invalidos[0].name ? ` "${invalidos[0].name}"` : '';
+                errorImagenes.textContent = `La imagen${nombre} supera el límite permitido de 10 MB y no fue agregada.`;
+            } else {
+                errorImagenes.textContent = `Algunas imágenes superan el límite permitido de 10 MB y no fueron agregadas.`;
+            }
+            errorImagenes.style.display = 'block';
+            inputImagenes.classList.add('is-invalid');
+        }
 
         function identificadorArchivo(archivo) {
             return `${archivo.name}-${archivo.size}-${archivo.lastModified}`;
@@ -310,8 +349,11 @@ block content
                         inputImagenes.files
                     );
 
+                const { validos, invalidos } = separarArchivosPorTamano(nuevosArchivos);
 
-                nuevosArchivos.forEach(
+                mostrarErrorInvalidos(invalidos);
+
+                validos.forEach(
                     archivo => {
 
                         const id =
@@ -348,5 +390,28 @@ block content
                 actualizarInputFiles();
 
                 renderizarImagenes();
+            }
+        );
+
+        formulario.addEventListener(
+            'submit',
+            (event) => {
+                actualizarInputFiles();
+
+                const archivos = imagenesSeleccionadas.map(item => item.archivo);
+                const { invalidos } = separarArchivosPorTamano(archivos);
+
+                if (invalidos.length > 0) {
+                    mostrarErrorInvalidos(invalidos);
+                    event.preventDefault();
+                    return;
+                }
+
+                if (imagenesSeleccionadas.length === 0) {
+                    errorImagenes.textContent = 'Debe seleccionar al menos una imagen válida.';
+                    errorImagenes.style.display = 'block';
+                    inputImagenes.classList.add('is-invalid');
+                    event.preventDefault();
+                }
             }
         );

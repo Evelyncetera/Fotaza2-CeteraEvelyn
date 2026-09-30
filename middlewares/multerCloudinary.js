@@ -19,7 +19,7 @@ export const uploadArray = (fieldName) => (req, res, next) => {
     upload.array(fieldName)(req, res, (err) => {
         if (err) {
             if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
-                req.session.mensaje = 'Una imagen supera el límite de 10 MB.';
+                req.session.mensaje = 'La imagen seleccionada supera el límite permitido de 10 MB. Elegí una imagen más pequeña.';
                 req.session.tipoMensaje = 'warning';
                 return res.redirect('/publicaciones/crear');
             }
