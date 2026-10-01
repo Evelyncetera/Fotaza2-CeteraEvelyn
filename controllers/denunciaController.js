@@ -30,7 +30,14 @@ export const denunciarImagen = async (req, res) => {
             return res.redirect('/');
         }
 
-        const imagen = await Imagen.findByPk(id);
+        const imagen = await Imagen.findByPk(id, {
+            include: [{
+                model: Publicacion,
+                as: 'publicacion',
+                where: { estado: 'publicada' },
+                required: true
+            }]
+        });
         if (!imagen) {
             req.session.mensaje = 'La imagen no existe.';
             req.session.tipoMensaje = 'warning';
@@ -99,7 +106,9 @@ export const denunciarComentario = async (req, res, next) => {
                         include: [
                             {
                                 model: Publicacion,
-                                as: 'publicacion'
+                                as: 'publicacion',
+                                where: { estado: 'publicada' },
+                                required: true
                             }
                         ]
                     }

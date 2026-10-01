@@ -141,7 +141,12 @@ export const agregarPublicacion = async (req, res, next) => {
 
             return res.redirect('/');
         }
-        const publicacion = await Publicacion.findByPk(publicacion_id);
+        const publicacion = await Publicacion.findOne({
+            where: {
+                id: publicacion_id,
+                estado: 'publicada'
+            }
+        });
 
         if (!publicacion) {
             req.session.mensaje ='La publicación no existe.';

@@ -25,7 +25,9 @@ export const crearValoracion = async (req, res) => {
         const imagen = await Imagen.findByPk(imagen_id, {
             include: [{
                 model: Publicacion,
-                as: 'publicacion'
+                as: 'publicacion',
+                where: { estado: 'publicada' },
+                required: true
             }]
             
         });

@@ -17,7 +17,9 @@ export const marcarInteres = async (req, res, next) => {
                 include: [
                     {
                         model: Publicacion,
-                        as: 'publicacion'
+                        as: 'publicacion',
+                        where: { estado: 'publicada' },
+                        required: true
                     }
                 ]
             }

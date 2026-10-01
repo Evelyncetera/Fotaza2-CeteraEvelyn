@@ -17,7 +17,9 @@ export const crearComentario = async (req, res) => {
                         include: [
                             {
                                 model: Publicacion,
-                                as: 'publicacion'
+                                as: 'publicacion',
+                                where: { estado: 'publicada' },
+                                required: true
                             }
                         ]
                     }
