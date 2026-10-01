@@ -117,7 +117,7 @@ export const validarUsuario = async (req, res) => {
     }
 };
 
-export const cerrarSesion = (req, res) => {
+export const cerrarSesion = (req, res, next) => {
 
     req.session.destroy((error) => {
 

@@ -49,25 +49,30 @@ export const crearComentario = async (req, res) => {
             Number(imagen.publicacion.usuario_id) !==
             Number(req.session.usuarioId)
         ) {
+            try {
+                await Notificacion.create({
 
-            await Notificacion.create({
+                    usuario_id:
+                        imagen.publicacion.usuario_id,
 
-                usuario_id:
-                    imagen.publicacion.usuario_id,
+                    actor_id:
+                        req.session.usuarioId,
 
-                actor_id:
-                    req.session.usuarioId,
+                    tipo:
+                        'comentario',
 
-                tipo:
-                    'comentario',
+                    publicacion_id:
+                        imagen.publicacion.id,
 
-                publicacion_id:
-                    imagen.publicacion.id,
-
-                imagen_id:
-                    imagen.id
-            });
+                    imagen_id:
+                        imagen.id
+                });
+            } catch (errorNotificacion) {
+                console.error('Error al crear notificación de comentario:', errorNotificacion);
+            }
         }
+        req.session.mensaje = 'Comentario publicado correctamente.';
+        req.session.tipoMensaje = 'success';
         res.redirect('/');
 
     } catch (error) {
