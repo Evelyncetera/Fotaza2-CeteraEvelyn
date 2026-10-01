@@ -36,6 +36,10 @@ const Imagen = sequelize.define(
             type: DataTypes.STRING,
             allowNull: true
         }, 
+        cloudinary_public_id: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         comentarios_abiertos: {
             type: DataTypes.BOOLEAN,
             allowNull: false,

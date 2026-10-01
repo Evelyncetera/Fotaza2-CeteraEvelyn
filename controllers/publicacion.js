@@ -399,6 +399,7 @@ export const crearPublicacion = async (req, res) => {
                     archivo: archivoFinal,
                     licencia,
                     marca_de_agua: marcaAgua,
+                    cloudinary_public_id: archivo.filename,
                     comentarios_abiertos: comentariosAbiertos.has(indice)
                 }, { transaction: t });
             }

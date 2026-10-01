@@ -335,6 +335,7 @@ export const ejecutarSeed = async (queryInterface = null) => {
             publicacion_id: publicaciones[0].id,
             licencia: 'sin_copyright',
             marca_de_agua: null,
+            cloudinary_public_id: null,
             comentarios_abiertos: true
         },
         {
@@ -342,6 +343,7 @@ export const ejecutarSeed = async (queryInterface = null) => {
             publicacion_id: publicaciones[0].id,
             licencia: 'sin_copyright',
             marca_de_agua: null,
+            cloudinary_public_id: null,
             comentarios_abiertos: true
         },
         {
@@ -349,6 +351,7 @@ export const ejecutarSeed = async (queryInterface = null) => {
             publicacion_id: publicaciones[0].id,
             licencia: 'sin_copyright',
             marca_de_agua: null,
+            cloudinary_public_id: null,
             comentarios_abiertos: true
         },
         {
@@ -356,6 +359,7 @@ export const ejecutarSeed = async (queryInterface = null) => {
             publicacion_id: publicaciones[0].id,
             licencia: 'sin_copyright',
             marca_de_agua: null,
+            cloudinary_public_id: null,
             comentarios_abiertos: true
         },
 
@@ -365,6 +369,7 @@ export const ejecutarSeed = async (queryInterface = null) => {
             publicacion_id: publicaciones[1].id,
             licencia: 'copyright',
             marca_de_agua: marcaAguaB,
+            cloudinary_public_id: null,
             comentarios_abiertos: true
         },
         {
@@ -372,6 +377,7 @@ export const ejecutarSeed = async (queryInterface = null) => {
             publicacion_id: publicaciones[1].id,
             licencia: 'sin_copyright',
             marca_de_agua: null,
+            cloudinary_public_id: null,
             comentarios_abiertos: true
         },
         {
@@ -379,6 +385,7 @@ export const ejecutarSeed = async (queryInterface = null) => {
             publicacion_id: publicaciones[1].id,
             licencia: 'copyright',
             marca_de_agua: marcaAguaB,
+            cloudinary_public_id: null,
             comentarios_abiertos: true
         },
 
@@ -388,6 +395,7 @@ export const ejecutarSeed = async (queryInterface = null) => {
             publicacion_id: publicaciones[2].id,
             licencia: 'sin_copyright',
             marca_de_agua: null,
+            cloudinary_public_id: null,
             comentarios_abiertos: true
         },
         {
@@ -395,6 +403,7 @@ export const ejecutarSeed = async (queryInterface = null) => {
             publicacion_id: publicaciones[2].id,
             licencia: 'sin_copyright',
             marca_de_agua: null,
+            cloudinary_public_id: null,
             comentarios_abiertos: true
         },
         {
@@ -402,6 +411,7 @@ export const ejecutarSeed = async (queryInterface = null) => {
             publicacion_id: publicaciones[2].id,
             licencia: 'copyright',
             marca_de_agua: marcaAguaC,
+            cloudinary_public_id: null,
             comentarios_abiertos: true
         },
 
@@ -411,6 +421,7 @@ export const ejecutarSeed = async (queryInterface = null) => {
             publicacion_id: publicaciones[3].id,
             licencia: 'copyright',
             marca_de_agua: marcaAguaD,
+            cloudinary_public_id: null,
             comentarios_abiertos: true
         },
         {
@@ -418,6 +429,7 @@ export const ejecutarSeed = async (queryInterface = null) => {
             publicacion_id: publicaciones[3].id,
             licencia: 'copyright',
             marca_de_agua: marcaAguaD,
+            cloudinary_public_id: null,
             comentarios_abiertos: true
         }
     ]);
