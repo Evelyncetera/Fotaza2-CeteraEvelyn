@@ -52,13 +52,20 @@ app.use(express.json());
 app.use(express.urlencoded( { extended: true} ));
 
 
+if (!process.env.SESSION_KEY) {
+    throw new Error('SESSION_KEY es obligatoria.');
+}
+
 //SESSION
 app.use(session({
     secret: process.env.SESSION_KEY,
     resave: false,
     saveUninitialized: false,
+    name: 'fotaza.sid',
     cookie: {
-        maxAge: 24 * 60 * 60 * 1000, // 24h
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000
     }
 }));
 

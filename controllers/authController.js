@@ -68,7 +68,7 @@ export const mostrarLogin = (req, res) => {
     res.render('auth/login');
 };
 
-export const validarUsuario = async (req, res) => {
+export const validarUsuario = async (req, res, next) => {
     const { email, password } = req.body;
 
     try {
@@ -106,9 +106,22 @@ export const validarUsuario = async (req, res) => {
             return res.redirect('/auth/login');
         }
 
-        req.session.usuarioId = usuario.id;
-        req.session.usuarioRol = usuario.rol.nombre;
-        res.redirect('/');
+        req.session.regenerate((err) => {
+            if (err) {
+                return next(err);
+            }
+
+            req.session.usuarioId = usuario.id;
+            req.session.usuarioRol = usuario.rol.nombre;
+
+            req.session.save((saveErr) => {
+                if (saveErr) {
+                    return next(saveErr);
+                }
+
+                res.redirect('/');
+            });
+        });
 
     } catch (error) {
         console.error('Error al iniciar sesión:', error);
@@ -124,6 +137,11 @@ export const cerrarSesion = (req, res, next) => {
         if (error) {
             return next(error);
         }
+
+        res.clearCookie('fotaza.sid', {
+            httpOnly: true,
+            sameSite: 'lax'
+        });
 
         res.redirect('/');
     });
